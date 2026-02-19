@@ -1496,26 +1496,129 @@ body.admin-mode .proj-card:hover .edit-btn { opacity: 1; }
     }
     .pinpad-cancel:hover { border-color: var(--red); color: var(--red); }
 
-    /* hold-to-unlock overlay */
-    .hold-ring {
-      display: none; position: fixed; bottom: 30px; left: 50%;
-      transform: translateX(-50%);
-      z-index: 9000; flex-direction: column; align-items: center; gap: 8px;
-      pointer-events: none;
+    /* tap-5 trigger — no hold ring needed */
+
+    /* ===== PIN LOCKOUT OVERLAY — SCARY ===== */
+    .pinlock-overlay {
+      display: none; position: absolute; inset: 0;
+      background: #000; border-radius: 24px 24px 0 0;
+      z-index: 10; flex-direction: column;
+      align-items: center; justify-content: center;
+      overflow: hidden;
     }
-    .hold-ring.show { display: flex; }
-    .hold-ring-circle {
-      width: 64px; height: 64px; border-radius: 50%;
-      border: 3px solid var(--border2);
-      border-top-color: var(--yellow);
-      animation: spin 1s linear infinite;
+    .pinlock-overlay::before {
+      content: '';
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        repeating-linear-gradient(0deg,
+          rgba(239,68,68,.04) 0, rgba(239,68,68,.04) 1px,
+          transparent 1px, transparent 32px),
+        repeating-linear-gradient(90deg,
+          rgba(239,68,68,.04) 0, rgba(239,68,68,.04) 1px,
+          transparent 1px, transparent 32px);
+      animation: gridScroll 6s linear infinite;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .hold-ring-label {
-      font-size: 11px; color: var(--yellow); font-weight: 600;
-      background: rgba(28,30,32,.9); padding: 4px 12px;
-      border-radius: 20px; backdrop-filter: blur(8px);
+    @keyframes gridScroll { to { background-position: 0 32px; } }
+    .pinlock-overlay::after {
+      content: ''; position: absolute; inset: 0; z-index: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(180,0,0,.18) 0%, transparent 70%);
+      animation: glowPulse 2s ease-in-out infinite;
     }
+    @keyframes glowPulse { 0%,100%{opacity:.6} 50%{opacity:1} }
+    .pinlock-overlay.show {
+      display: flex;
+      animation: lockIn .5s cubic-bezier(.36,.07,.19,.97) both;
+    }
+    @keyframes lockIn {
+      0%  { opacity:0; filter:blur(12px) brightness(2); }
+      100%{ opacity:1; filter:blur(0) brightness(1); }
+    }
+    .pinlock-content {
+      position: relative; z-index: 2;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 10px;
+      width: 100%; padding: 24px 20px 32px;
+    }
+    .pinlock-scanline {
+      position: absolute; top: -4px; left: 0; right: 0;
+      height: 4px; z-index: 5;
+      background: linear-gradient(90deg,
+        transparent 0%, rgba(239,68,68,.6) 30%,
+        rgba(255,100,100,.9) 50%, rgba(239,68,68,.6) 70%, transparent 100%);
+      animation: scan 2.5s linear infinite;
+      filter: blur(1px);
+    }
+    @keyframes scan { from{top:-4px} to{top:100%} }
+    .pinlock-badge {
+      background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.5);
+      color: #ef4444; font-size: 9px; font-weight: 900;
+      padding: 3px 12px; border-radius: 3px;
+      letter-spacing: .18em; font-family: 'JetBrains Mono', monospace;
+      animation: badgeBlink 1s step-start infinite;
+      text-shadow: 0 0 8px rgba(239,68,68,.8);
+    }
+    @keyframes badgeBlink { 0%,100%{opacity:1} 50%{opacity:.3} }
+    .pinlock-icon {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(180,0,0,.3) 0%, rgba(80,0,0,.1) 100%);
+      border: 2px solid #ef4444;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px; color: #ef4444;
+      text-shadow: 0 0 20px rgba(239,68,68,.8);
+      animation: iconPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes iconPulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(239,68,68,.5), 0 0 20px rgba(239,68,68,.2); transform: scale(1); }
+      50%      { box-shadow: 0 0 0 18px rgba(239,68,68,.0), 0 0 40px rgba(239,68,68,.5); transform: scale(1.05); }
+    }
+    .pinlock-title {
+      font-size: 22px; font-weight: 900; color: #ef4444;
+      letter-spacing: .12em; font-family: 'JetBrains Mono', monospace;
+      text-shadow: 0 0 20px rgba(239,68,68,.7), 0 0 40px rgba(239,68,68,.3);
+      animation: titleFlicker 4s linear infinite;
+    }
+    @keyframes titleFlicker {
+      0%,95%,100%{opacity:1} 96%{opacity:.6} 97%{opacity:1} 98%{opacity:.4} 99%{opacity:1}
+    }
+    .pinlock-sub {
+      font-size: 11px; color: #4b5563; text-align: center;
+      line-height: 1.8; font-family: 'JetBrains Mono', monospace;
+    }
+    .pinlock-sub span { color: #dc2626; font-weight: 700; }
+    .pinlock-timer-wrap {
+      background: rgba(239,68,68,.06); border: 1px solid rgba(239,68,68,.25);
+      border-radius: 10px; padding: 12px 24px; text-align: center;
+      box-shadow: 0 0 20px rgba(239,68,68,.1);
+    }
+    .pinlock-timer {
+      font-size: 48px; font-weight: 900; color: #ef4444;
+      font-family: 'JetBrains Mono', monospace; line-height: 1;
+      text-shadow: 0 0 30px rgba(239,68,68,.7);
+      letter-spacing: .06em;
+      animation: timerPulse 1s ease-in-out infinite;
+    }
+    @keyframes timerPulse { 0%,100%{opacity:1} 50%{opacity:.8} }
+    .pinlock-timer-label {
+      font-size: 8px; color: #374151; margin-top: 3px;
+      text-transform: uppercase; letter-spacing: .18em;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .pinlock-bar-wrap {
+      width: 100%; background: rgba(239,68,68,.06);
+      border: 1px solid rgba(239,68,68,.15);
+      border-radius: 3px; height: 8px; overflow: hidden;
+    }
+    .pinlock-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #450a0a, #991b1b, #ef4444);
+      box-shadow: 0 0 10px rgba(239,68,68,.5);
+      transition: width 1s linear;
+    }
+    .pinlock-ip {
+      font-size: 10px; color: #374151;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .pinlock-ip span { color: #ef4444; }
   </style>
 </head>
 
@@ -1524,7 +1627,7 @@ body.admin-mode .proj-card:hover .edit-btn { opacity: 1; }
   <nav class="topnav">
     <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
     <div class="logo-wrap">
-      <div class="logo-icon">K</div>
+      <div class="logo-icon" id="logo-tap-trigger" title="">K</div>
       <div class="logo-title">Kaow<span>punx</span></div>
     </div>
     <div class="nav-right">
@@ -1919,13 +2022,16 @@ body.admin-mode .proj-card:hover .edit-btn { opacity: 1; }
     // =====================================================
     const TRACKER_CONFIG = {
       // Webhook #1 — ผู้เยี่ยมชมเข้าเว็บ
-      WEBHOOK_VISIT:   'https://discord.com/api/webhooks/1474065580146430064/yois0w0JjNiKlIPWY8bJqmJ7zZxsyShUXqOGfuQDA_Q0Gz-zLAxZCJle2_0oKbITOlNn',
+      WEBHOOK_VISIT:    'https://discord.com/api/webhooks/1474065580146430064/yois0w0JjNiKlIPWY8bJqmJ7zZxsyShUXqOGfuQDA_Q0Gz-zLAxZCJle2_0oKbITOlNn',
       // Webhook #2 — เปลี่ยน Section
-      WEBHOOK_SECTION: 'https://discord.com/api/webhooks/1474065580146430064/yois0w0JjNiKlIPWY8bJqmJ7zZxsyShUXqOGfuQDA_Q0Gz-zLAxZCJle2_0oKbITOlNn',
+      WEBHOOK_SECTION:  'https://discord.com/api/webhooks/1474076650760306861/pts7l4kc7tDgPsX0FOr7k3qhWe863v_lRAb4FkLaLcu_TCr5vZZBp-lzK6H_2uS9he-L',
       // Webhook #3 — Admin แก้ไข/สร้าง/ลบโปรเจกต์
-      WEBHOOK_ADMIN:   'https://discord.com/api/webhooks/1474065580146430064/yois0w0JjNiKlIPWY8bJqmJ7zZxsyShUXqOGfuQDA_Q0Gz-zLAxZCJle2_0oKbITOlNn',
-      BIN_ID: '69972c1ed0ea881f40c739f2',
-      API_KEY: '$2a$10$Cft7ADPKnOnw/j79KdvlA.j9LUrf.36Hu3NhqLBCguk9EJq2Eew6e',
+      WEBHOOK_ADMIN:    'https://discord.com/api/webhooks/1474076785443475584/5YN9s75UhBPCySpn9IjwpYWjCtLDu0o-jkLx75dDz4R_uxTTqfK2KZ14ycEm8uuloGDJ',
+      // Webhook #4 — กรอกรหัสผิด / ล็อคระบบ (ใส่ URL webhook ใหม่ของคุณตรงนี้)
+      WEBHOOK_LOCKOUT:  'https://discord.com/api/webhooks/1474179979020468236/G9Ts3XUXHa0NLOC0CJ5KrnPywyNrvDbCfYXpF3sgDQg2nMRCFQo36W1J0FA6m39fWArY',
+
+      JSONBIN_BIN_ID:   '69972c1ed0ea881f40c739f2',
+      JSONBIN_API_KEY:  '$2a$10$xanXzGI60w9c5TdOdOAlzuCK9.WeqEWTFX1C.JO0Nbd1gd9r0tJ5e',
       SITE_NAME: 'Kaowpunx Portfolio',
       ENABLED: true
     };
@@ -1983,67 +2089,235 @@ body.admin-mode .proj-card:hover .edit-btn { opacity: 1; }
       } catch (e) { console.warn('[JSONBin] error:', e.message); }
     }
 
-    // Webhook #1 — เข้าเว็บ (page load)
+    // ===== DEVICE / BROWSER PARSER — เก็บทุกอย่าง =====
+    let _cachedBattery = null;
+    async function getBattery() {
+      if (_cachedBattery) return _cachedBattery;
+      try {
+        const bat = await navigator.getBattery?.();
+        if (bat) {
+          _cachedBattery = {
+            level: Math.round(bat.level * 100) + '%',
+            charging: bat.charging ? '⚡ กำลังชาร์จ' : '🔋 ไม่ชาร์จ'
+          };
+        }
+      } catch { _cachedBattery = null; }
+      return _cachedBattery;
+    }
+
+    // เรียกล่วงหน้าตอน load
+    getBattery();
+
+    function getDeviceInfo() {
+      const ua = navigator.userAgent;
+
+      // OS
+      let os = 'Unknown OS';
+      if (/Windows NT 10/.test(ua)) os = 'Windows 10/11';
+      else if (/Windows NT 6\.3/.test(ua)) os = 'Windows 8.1';
+      else if (/Windows NT 6/.test(ua)) os = 'Windows 7/8';
+      else if (/Mac OS X ([\d_]+)/.test(ua)) os = 'macOS ' + (ua.match(/Mac OS X ([\d_]+)/)?.[1]?.replace(/_/g,'.') || '');
+      else if (/Android ([\d.]+)/.test(ua)) os = 'Android ' + (ua.match(/Android ([\d.]+)/)?.[1] || '');
+      else if (/iPhone OS ([\d_]+)/.test(ua)) os = 'iOS ' + (ua.match(/iPhone OS ([\d_]+)/)?.[1]?.replace(/_/g,'.') || '');
+      else if (/iPad.*OS ([\d_]+)/.test(ua)) os = 'iPadOS ' + (ua.match(/OS ([\d_]+)/)?.[1]?.replace(/_/g,'.') || '');
+      else if (/Linux/.test(ua)) os = 'Linux';
+
+      // Browser
+      let browser = 'Unknown';
+      if (/Edg\/([\d]+)/.test(ua)) browser = 'Edge ' + (ua.match(/Edg\/([\d]+)/)?.[1] || '');
+      else if (/OPR\/([\d]+)/.test(ua)) browser = 'Opera ' + (ua.match(/OPR\/([\d]+)/)?.[1] || '');
+      else if (/SamsungBrowser\/([\d]+)/.test(ua)) browser = 'Samsung Browser ' + (ua.match(/SamsungBrowser\/([\d]+)/)?.[1] || '');
+      else if (/Firefox\/([\d]+)/.test(ua)) browser = 'Firefox ' + (ua.match(/Firefox\/([\d]+)/)?.[1] || '');
+      else if (/Chrome\/([\d]+)/.test(ua)) browser = 'Chrome ' + (ua.match(/Chrome\/([\d]+)/)?.[1] || '');
+      else if (/Safari\/([\d]+)/.test(ua)) browser = 'Safari';
+
+      // Device
+      let device = '🖥️ Desktop';
+      if (/iPhone/.test(ua)) device = '📱 iPhone';
+      else if (/Android.*Mobile/.test(ua)) device = '📱 Android Phone';
+      else if (/iPad/.test(ua)) device = '📟 iPad';
+      else if (/Android/.test(ua) && !/Mobile/.test(ua)) device = '📟 Android Tablet';
+
+      // Screen & Window
+      const screenRes = window.screen.width + '×' + window.screen.height;
+      const windowSize = window.innerWidth + '×' + window.innerHeight;
+      const pixelRatio = (window.devicePixelRatio || 1).toFixed(1) + 'x';
+      const orientation = screen.orientation?.type?.includes('landscape') ? '🔄 Landscape' : '📱 Portrait';
+
+      // System
+      const lang = navigator.language || 'unknown';
+      const langs = (navigator.languages || []).slice(0,3).join(', ') || lang;
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'unknown';
+      const ram = navigator.deviceMemory ? navigator.deviceMemory + ' GB' : 'unknown';
+      const cpu = navigator.hardwareConcurrency ? navigator.hardwareConcurrency + ' cores' : 'unknown';
+      const online = navigator.onLine ? '🟢 Online' : '🔴 Offline';
+
+      // Network
+      const conn = navigator.connection;
+      const connType = conn?.effectiveType || 'unknown';
+      const downlink = conn?.downlink ? conn.downlink + ' Mbps' : 'unknown';
+      const saveData = conn?.saveMode ? 'เปิด' : 'ปิด';
+
+      // Theme
+      const theme = document.body.classList.contains('light-mode') ? '☀️ Light' : '🌙 Dark';
+
+      // Visit count
+      const visits = parseInt(localStorage.getItem('kx_visit_count') || '0') + 1;
+      localStorage.setItem('kx_visit_count', visits.toString());
+
+      return {
+        os, browser, device,
+        screenRes, windowSize, pixelRatio, orientation,
+        lang, langs, tz, ram, cpu, online,
+        connType, downlink, saveData,
+        theme, visits,
+        battery: _cachedBattery
+      };
+    }
+
+    // Scroll depth tracker
+    let maxScroll = 0;
+    window.addEventListener('scroll', () => {
+      const pct = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+      if (pct > maxScroll) maxScroll = Math.min(pct, 100);
+    }, { passive: true });
+
+    // Time on page tracker
+    const pageLoadTime = Date.now();
+    function getTimeOnPage() {
+      const sec = Math.round((Date.now() - pageLoadTime) / 1000);
+      if (sec < 60) return sec + ' วินาที';
+      return Math.floor(sec/60) + ' นาที ' + (sec%60) + ' วิ';
+    }
+
+    // Webhook #1 — เข้าเว็บ (page load) — ละเอียดสุด
     async function trackPageLoad() {
       await getIP();
       const ua = navigator.userAgent;
+      const dev = getDeviceInfo();
+      const bat = _cachedBattery;
       const record = {
         type: 'page_load', ip: visitorIP, session: sessionID,
         datetime: new Date().toISOString(), dateDisplay: nowTH(),
-        ua, referrer: document.referrer || 'direct', page: 'home'
+        ua, referrer: document.referrer || 'direct', page: 'home',
+        browser: dev.browser, os: dev.os, device: dev.device,
+        screen: dev.screenRes, visits: dev.visits
       };
       saveToJSONBin(record);
       sendWebhook(TRACKER_CONFIG.WEBHOOK_VISIT, {
         title: '🌐 ผู้เยี่ยมชมใหม่เข้าเว็บ',
-        description: 'มีคนเปิดหน้า Portfolio',
+        description: `มีคนเปิดหน้า **Kaowpunx Portfolio**`,
         color: 0x3b82f6,
         fields: [
-          { name: '🌐 IP', value: sanitize(visitorIP), inline: true },
-          { name: '📅 เวลา (TH)', value: sanitize(nowTH()), inline: true },
-          { name: '📍 Referrer', value: sanitize(document.referrer || 'Direct'), inline: true },
-          { name: '🔑 Session', value: sanitize(sessionID.slice(0,8) + '...'), inline: true },
-          { name: '📱 Browser', value: sanitize(ua.slice(0,80)), inline: false }
+          { name: '🌐 IP Address',      value: '`' + sanitize(visitorIP) + '`',                   inline: true },
+          { name: '📅 เวลา (TH)',        value: sanitize(nowTH()),                                 inline: true },
+          { name: '🔢 ครั้งที่เข้า',     value: '#' + dev.visits,                                 inline: true },
+          { name: '📱 อุปกรณ์',          value: sanitize(dev.device),                             inline: true },
+          { name: '🖥️ OS',              value: sanitize(dev.os),                                  inline: true },
+          { name: '🌍 Browser',          value: sanitize(dev.browser),                            inline: true },
+          { name: '📐 Screen',           value: sanitize(dev.screenRes) + ' (' + dev.pixelRatio + ')', inline: true },
+          { name: '🪟 Window',           value: sanitize(dev.windowSize),                         inline: true },
+          { name: '🔄 Orientation',      value: sanitize(dev.orientation),                        inline: true },
+          { name: '🗺️ Timezone',         value: sanitize(dev.tz),                                 inline: true },
+          { name: '🌐 ภาษา',             value: sanitize(dev.langs),                              inline: true },
+          { name: '🌡️ Theme',            value: sanitize(dev.theme),                              inline: true },
+          { name: '📶 Network',          value: sanitize(dev.connType) + ' / ' + sanitize(dev.downlink), inline: true },
+          { name: '🌏 Status',           value: sanitize(dev.online),                             inline: true },
+          { name: '💾 RAM',              value: sanitize(dev.ram),                                inline: true },
+          { name: '⚙️ CPU',              value: sanitize(dev.cpu),                                inline: true },
+          { name: '🔋 Battery',          value: _cachedBattery ? _cachedBattery.level + ' ' + _cachedBattery.charging : 'ไม่มีข้อมูล', inline: true },
+          { name: '📍 Referrer',         value: sanitize(document.referrer || 'Direct link'),     inline: true },
+          { name: '🔑 Session ID',       value: '`' + sanitize(sessionID.slice(0,16)) + '...`',  inline: false },
+          { name: '📱 User-Agent',       value: '`' + sanitize(ua.slice(0,120)) + '`',           inline: false }
         ],
-        footer: { text: `${TRACKER_CONFIG.SITE_NAME} • Visit Tracker` },
+        footer: { text: TRACKER_CONFIG.SITE_NAME + ' • Visit Tracker v2' },
         timestamp: new Date().toISOString()
       });
     }
 
     // Webhook #2 — เปลี่ยน Section
     async function trackSectionChange(sectionName) {
+      const dev = getDeviceInfo();
       const record = {
         type: 'section_view', ip: visitorIP, session: sessionID,
         datetime: new Date().toISOString(), dateDisplay: nowTH(),
-        section: sectionName, page: sectionName
+        section: sectionName, page: sectionName,
+        browser: dev.browser, os: dev.os, device: dev.device,
+        scrollDepth: maxScroll + '%', timeOnPage: getTimeOnPage()
       };
       saveToJSONBin(record);
+      const emoji = sectionName.includes('Developer') ? '💻' : sectionName.includes('หน้าบ้าน') ? '🎨' : '📂';
       sendWebhook(TRACKER_CONFIG.WEBHOOK_SECTION, {
-        title: '📂 เข้าดูหมวดหมู่',
-        description: `เปิดดูหมวด **${sectionName}**`,
+        title: emoji + ' เปิดดูหมวด: ' + sectionName,
+        description: 'ผู้เยี่ยมชมเข้าดูหมวด **' + sectionName + '**',
         color: 0x10b981,
         fields: [
-          { name: '📂 หมวดหมู่', value: sanitize(sectionName), inline: true },
-          { name: '🌐 IP', value: sanitize(visitorIP), inline: true },
-          { name: '📅 เวลา (TH)', value: sanitize(nowTH()), inline: true },
-          { name: '🔑 Session', value: sanitize(sessionID.slice(0,8) + '...'), inline: true }
+          { name: '📂 หมวดหมู่',      value: sanitize(sectionName),                             inline: true },
+          { name: '🌐 IP Address',    value: '`' + sanitize(visitorIP) + '`',                   inline: true },
+          { name: '📅 เวลา (TH)',     value: sanitize(nowTH()),                                 inline: true },
+          { name: '📱 อุปกรณ์',        value: sanitize(dev.device),                             inline: true },
+          { name: '🌍 Browser',       value: sanitize(dev.browser),                            inline: true },
+          { name: '🖥️ OS',            value: sanitize(dev.os),                                  inline: true },
+          { name: '📜 Scroll Depth',  value: maxScroll + '%',                                  inline: true },
+          { name: '⏱️ เวลาบนหน้า',    value: getTimeOnPage(),                                   inline: true },
+          { name: '🌡️ Theme',         value: sanitize(dev.theme),                              inline: true },
+          { name: '🔑 Session ID',    value: '`' + sanitize(sessionID.slice(0,16)) + '...`',   inline: false }
         ],
-        footer: { text: `${TRACKER_CONFIG.SITE_NAME} • Section Tracker` },
+        footer: { text: TRACKER_CONFIG.SITE_NAME + ' • Section Tracker v2' },
         timestamp: new Date().toISOString()
       });
     }
 
-    // Webhook #3 — Admin กระทำ (แก้ไข / สร้าง / ลบ)
+    // Webhook #3 — Admin กระทำ
     async function trackAdminAction(action, detail) {
+      const dev = getDeviceInfo();
+      const bat = _cachedBattery;
+      const emoji = action.includes('ลบ') ? '🗑️' : action.includes('สร้าง') ? '✨' : action.includes('เข้า') ? '🔓' : action.includes('ล็อค') ? '🔒' : '🔧';
+      const color = action.includes('ลบ') ? 0xef4444 : action.includes('สร้าง') ? 0x10b981 : action.includes('ล็อค') ? 0xef4444 : 0xf59e0b;
       sendWebhook(TRACKER_CONFIG.WEBHOOK_ADMIN, {
-        title: `🔧 Admin: ${sanitize(action)}`,
+        title: emoji + ' Admin: ' + sanitize(action),
         description: sanitize(detail),
-        color: 0xf59e0b,
+        color,
         fields: [
-          { name: '⚙️ การกระทำ', value: sanitize(action), inline: true },
-          { name: '📅 เวลา (TH)', value: sanitize(nowTH()), inline: true },
-          { name: '🌐 IP', value: sanitize(visitorIP), inline: true }
+          { name: '⚙️ การกระทำ',     value: sanitize(action),                                  inline: true },
+          { name: '📅 เวลา (TH)',     value: sanitize(nowTH()),                                 inline: true },
+          { name: '🌐 IP Address',    value: '`' + sanitize(visitorIP) + '`',                   inline: true },
+          { name: '📱 อุปกรณ์',        value: sanitize(dev.device),                             inline: true },
+          { name: '🌍 Browser',       value: sanitize(dev.browser),                            inline: true },
+          { name: '🖥️ OS',            value: sanitize(dev.os),                                  inline: true },
+          { name: '📜 Scroll Depth',  value: maxScroll + '%',                                  inline: true },
+          { name: '⏱️ เวลาบนหน้า',    value: getTimeOnPage(),                                   inline: true },
+          { name: '🔋 Battery',       value: bat ? bat.level + ' ' + bat.charging : 'N/A',    inline: true },
+          { name: '🔑 Session ID',    value: '`' + sanitize(sessionID.slice(0,16)) + '...`',   inline: false }
         ],
-        footer: { text: `${TRACKER_CONFIG.SITE_NAME} • Admin Tracker` },
+        footer: { text: TRACKER_CONFIG.SITE_NAME + ' • Admin Tracker v2' },
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    // Webhook #4 — กรอกรหัสผิด / ล็อคระบบ
+    async function trackLockout(failCount, isLocked) {
+      const dev = getDeviceInfo();
+      const bat = _cachedBattery;
+      sendWebhook(TRACKER_CONFIG.WEBHOOK_LOCKOUT, {
+        title: isLocked ? '🚨 ระบบถูกล็อค! กรอกรหัสผิด 5 ครั้ง' : '⚠️ กรอกรหัสผิด ครั้งที่ ' + failCount,
+        description: isLocked
+          ? 'มีคนพยายามเข้า Admin Mode เกินจำนวนครั้งที่กำหนด **ล็อค 5 นาที**'
+          : 'มีคนพยายามกรอกรหัส Admin Mode แต่ผิด',
+        color: isLocked ? 0xff0000 : 0xf97316,
+        fields: [
+          { name: '🌐 IP Address',    value: '`' + sanitize(visitorIP) + '`',                   inline: true },
+          { name: '📅 เวลา (TH)',     value: sanitize(nowTH()),                                 inline: true },
+          { name: '❌ ครั้งที่ผิด',   value: failCount + '/5',                                  inline: true },
+          { name: '🔒 สถานะ',         value: isLocked ? '🔴 ล็อคแล้ว 5 นาที' : '🟡 ยังไม่ล็อค', inline: true },
+          { name: '📱 อุปกรณ์',        value: sanitize(dev.device),                             inline: true },
+          { name: '🌍 Browser',       value: sanitize(dev.browser),                            inline: true },
+          { name: '🖥️ OS',            value: sanitize(dev.os),                                  inline: true },
+          { name: '📐 Screen',        value: sanitize(dev.screenRes),                           inline: true },
+          { name: '🔋 Battery',       value: bat ? bat.level + ' ' + bat.charging : 'N/A',    inline: true },
+          { name: '🔑 Session ID',    value: '`' + sanitize(sessionID.slice(0,16)) + '...`',   inline: false }
+        ],
+        footer: { text: TRACKER_CONFIG.SITE_NAME + ' • Security Alert' },
         timestamp: new Date().toISOString()
       });
     }
@@ -2084,11 +2358,16 @@ body.admin-mode .proj-card:hover .edit-btn { opacity: 1; }
     let confirmCallback = null;
 
     function showConfirm(title, msg, okLabel = 'ยืนยัน', iconClass = 'fa-trash') {
-      document.getElementById('confirm-title').textContent = title;
-      document.getElementById('confirm-msg').textContent = msg;
-      document.getElementById('confirm-ok-btn').textContent = okLabel;
-      document.getElementById('confirm-icon-i').className = `fas ${iconClass}`;
-      document.getElementById('confirm-dialog').classList.add('open');
+      const ct = document.getElementById('confirm-title');
+      const cm = document.getElementById('confirm-msg');
+      const co = document.getElementById('confirm-ok-btn');
+      const ci = document.getElementById('confirm-icon-i');
+      const cd = document.getElementById('confirm-dialog');
+      if (ct) ct.textContent = title;
+      if (cm) cm.textContent = msg;
+      if (co) co.textContent = okLabel;
+      if (ci) ci.className = `fas ${iconClass}`;
+      if (cd) cd.classList.add('open');
       return new Promise(resolve => { confirmCallback = resolve; });
     }
 
@@ -2254,12 +2533,13 @@ body.admin-mode .proj-card:hover .edit-btn { opacity: 1; }
       const link = document.getElementById('edit-link').value.trim();
       const status = document.getElementById('edit-status').value;
 
-      if (title) document.getElementById(`${p}-title`).textContent = title;
-      if (desc) document.getElementById(`${p}-desc`).textContent = desc;
-      if (tag1) document.getElementById(`${p}-tag1`).textContent = tag1;
-      if (tag2) document.getElementById(`${p}-tag2`).textContent = tag2;
-      if (link) document.getElementById(`${p}-link`).href = link;
-      document.getElementById(`${p}-status`).textContent = status;
+      const el = (id) => document.getElementById(id);
+      if (title) el(`${p}-title`)  && (el(`${p}-title`).textContent  = title);
+      if (desc)  el(`${p}-desc`)   && (el(`${p}-desc`).textContent   = desc);
+      if (tag1)  el(`${p}-tag1`)   && (el(`${p}-tag1`).textContent   = tag1);
+      if (tag2)  el(`${p}-tag2`)   && (el(`${p}-tag2`).textContent   = tag2);
+      if (link && el(`${p}-link`)) el(`${p}-link`).href = link;
+      if (el(`${p}-status`))       el(`${p}-status`).textContent     = status;
 
       applyImageToThumb(page, num, currentImgData);
       saveProjectImages();
@@ -2318,79 +2598,87 @@ body.admin-mode .proj-card:hover .edit-btn { opacity: 1; }
       toast('🔒 ออกจาก Admin Mode แล้ว', 'i');
     }
 
-    // --- Mobile: กดค้าง 15 วินาที → PIN Pad ---
-    let holdTimer = null;
-    let holdProgress = null;
-    let holdStart = null;
+    // --- Mobile + Desktop: กดโลโก้ "K" 5 ครั้งติดกัน → PIN Pad ---
+    let tapCount = 0;
+    let tapTimer = null;
 
-    function startHold(e) {
-      // ป้องกัน context menu บน mobile
-      e.preventDefault();
-      holdStart = Date.now();
-      document.getElementById('hold-ring').classList.add('show');
-      holdTimer = setTimeout(() => {
-        document.getElementById('hold-ring').classList.remove('show');
+    function handleLogoTap() {
+      tapCount++;
+      // reset ถ้าไม่กดต่อใน 1.5 วินาที
+      clearTimeout(tapTimer);
+      tapTimer = setTimeout(() => { tapCount = 0; }, 1500);
+
+      if (tapCount >= 5) {
+        tapCount = 0;
+        clearTimeout(tapTimer);
         openPinPad();
-      }, 15000);
+      }
     }
 
-    function cancelHold() {
-      if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
-      document.getElementById('hold-ring').classList.remove('show');
-    }
-
-    // ผูก event บน body สำหรับ mobile
-    document.addEventListener('touchstart', (e) => {
-      // กดค้าง 3 นิ้วพร้อมกัน หรือกดค้างที่ header logo
-      const target = e.target;
-      const isLogo = target.closest('.logo-wrap') || target.closest('.logo-icon');
-      if (isLogo && e.touches.length >= 1) startHold(e);
-    }, { passive: false });
-    document.addEventListener('touchend', cancelHold);
-    document.addEventListener('touchmove', cancelHold);
-
-    // กดค้าง logo บน desktop ด้วย
+    // ผูก event กับโลโก้
     document.addEventListener('DOMContentLoaded', () => {
-      const logoWrap = document.querySelector('.logo-wrap');
-      if (logoWrap) {
-        logoWrap.addEventListener('mousedown', (e) => {
-          // เฉพาะ mobile/touch fallback
-          if (window.matchMedia('(pointer:coarse)').matches) startHold(e);
-        });
-        logoWrap.addEventListener('mouseup', cancelHold);
-        logoWrap.addEventListener('mouseleave', cancelHold);
-        logoWrap.style.cursor = 'pointer';
-        logoWrap.title = 'กดค้าง 15 วินาทีเพื่อเข้า Admin Mode';
+      const trigger = document.getElementById('logo-tap-trigger');
+      if (trigger) {
+        // Mobile (touch)
+        trigger.addEventListener('touchend', (e) => {
+          e.preventDefault();
+          handleLogoTap();
+        }, { passive: false });
+        // Desktop (click)
+        trigger.addEventListener('click', handleLogoTap);
+        trigger.style.cursor = 'pointer';
+        trigger.style.userSelect = 'none';
+        trigger.style.webkitUserSelect = 'none';
       }
     });
 
-    // --- PIN Pad ---
+    // --- PIN Pad + Lockout System ---
     let pinValue = '';
+    let pinFailCount = 0;
+    const PIN_MAX_FAILS = 5;
+    const PIN_LOCKOUT_MS = 5 * 60 * 1000; // 5 นาที
+    let pinLockUntil = parseInt(localStorage.getItem('kx_pin_lock') || '0');
+    let pinLockInterval = null;
+
+    function isPinLocked() { return pinLockUntil > Date.now(); }
 
     function openPinPad() {
       pinValue = '';
       updatePinDots();
-      document.getElementById('pinpad-error').textContent = '';
-      document.getElementById('pinpad-bg').classList.add('open');
-    }
-
-    function closePinPad() {
-      document.getElementById('pinpad-bg').classList.remove('open');
-      pinValue = '';
-      updatePinDots();
-      document.getElementById('pinpad-error').textContent = '';
-    }
-
-    function pinInput(digit) {
-      if (pinValue.length >= 6) return;
-      pinValue += digit;
-      updatePinDots();
-      if (pinValue.length === 6) {
-        setTimeout(checkPin, 150);
+      setErrMsg('');
+      document.getElementById('pinpad-bg')?.classList.add('open');
+      // เช็ค lockout
+      pinLockUntil = parseInt(localStorage.getItem('kx_pin_lock') || '0');
+      if (isPinLocked()) {
+        showPinLock();
+      } else {
+        hidePinLock();
       }
     }
 
+    function closePinPad() {
+      document.getElementById('pinpad-bg')?.classList.remove('open');
+      pinValue = '';
+      updatePinDots();
+      setErrMsg('');
+      if (pinLockInterval) { clearInterval(pinLockInterval); pinLockInterval = null; }
+    }
+
+    function setErrMsg(msg) {
+      const el = document.getElementById('pinpad-error');
+      if (el) el.textContent = msg;
+    }
+
+    function pinInput(digit) {
+      if (isPinLocked()) return;
+      if (pinValue.length >= 6) return;
+      pinValue += digit;
+      updatePinDots();
+      if (pinValue.length === 6) setTimeout(checkPin, 150);
+    }
+
     function pinDelete() {
+      if (isPinLocked()) return;
       pinValue = pinValue.slice(0, -1);
       updatePinDots();
     }
@@ -2407,22 +2695,82 @@ body.admin-mode .proj-card:hover .edit-btn { opacity: 1; }
 
     function checkPin() {
       if (pinValue === ADMIN_PIN) {
+        pinFailCount = 0;
+        localStorage.removeItem('kx_pin_lock');
+        localStorage.removeItem('kx_pin_fails');
         closePinPad();
         toggleAdminMode(true);
+        trackAdminAction('เข้า Admin Mode สำเร็จ', 'Login ผ่าน PIN Pad บนมือถือ/คลิก');
       } else {
-        // แสดง error + shake
+        pinFailCount++;
+        localStorage.setItem('kx_pin_fails', pinFailCount.toString());
+
+        // shake dots
         for (let i = 0; i < 6; i++) {
           const dot = document.getElementById(`pd${i}`);
           if (dot) { dot.classList.add('error-dot'); dot.classList.remove('filled'); }
         }
-        document.getElementById('pinpad-error').textContent = 'รหัสไม่ถูกต้อง ลองใหม่';
-        setTimeout(() => {
-          pinValue = '';
-          updatePinDots();
-          document.getElementById('pinpad-error').textContent = '';
-        }, 900);
+
+        if (pinFailCount >= PIN_MAX_FAILS) {
+          // ล็อค 5 นาที
+          pinLockUntil = Date.now() + PIN_LOCKOUT_MS;
+          localStorage.setItem('kx_pin_lock', pinLockUntil.toString());
+          pinFailCount = 0;
+          localStorage.removeItem('kx_pin_fails');
+          trackLockout(PIN_MAX_FAILS, true);  // Webhook #4 — ล็อคแล้ว
+          setTimeout(() => { pinValue = ''; updatePinDots(); showPinLock(); }, 500);
+        } else {
+          const remaining = PIN_MAX_FAILS - pinFailCount;
+          trackLockout(pinFailCount, false);  // Webhook #4 — ผิดแต่ยังไม่ล็อค
+          setErrMsg('รหัสไม่ถูกต้อง — เหลืออีก ' + remaining + ' ครั้ง');
+          setTimeout(() => {
+            pinValue = '';
+            updatePinDots();
+            if (!isPinLocked()) setErrMsg('');
+          }, 900);
+        }
       }
     }
+
+    function showPinLock() {
+      const overlay = document.getElementById('pinlock-overlay');
+      if (overlay) overlay.classList.add('show');
+      // แสดง IP
+      const ipEl = document.getElementById('pinlock-ip-display');
+      if (ipEl) ipEl.textContent = 'IP: ' + visitorIP;
+      startLockCountdown();
+    }
+
+    function hidePinLock() {
+      const overlay = document.getElementById('pinlock-overlay');
+      if (overlay) overlay.classList.remove('show');
+      if (pinLockInterval) { clearInterval(pinLockInterval); pinLockInterval = null; }
+    }
+
+    function startLockCountdown() {
+      const totalMs = PIN_LOCKOUT_MS;
+      if (pinLockInterval) clearInterval(pinLockInterval);
+      pinLockInterval = setInterval(() => {
+        const remaining = Math.max(0, pinLockUntil - Date.now());
+        const m = Math.floor(remaining / 60000).toString().padStart(2,'0');
+        const s = Math.floor((remaining % 60000) / 1000).toString().padStart(2,'0');
+        const timerEl = document.getElementById('pinlock-timer');
+        const barEl   = document.getElementById('pinlock-bar');
+        if (timerEl) timerEl.textContent = `${m}:${s}`;
+        if (barEl)   barEl.style.width   = `${(remaining / totalMs) * 100}%`;
+        if (remaining <= 0) {
+          clearInterval(pinLockInterval);
+          pinLockInterval = null;
+          pinLockUntil = 0;
+          localStorage.removeItem('kx_pin_lock');
+          hidePinLock();
+          setErrMsg('');
+        }
+      }, 1000);
+    }
+
+    // โหลด fail count จาก localStorage
+    pinFailCount = parseInt(localStorage.getItem('kx_pin_fails') || '0');
 
     // =====================================================
     //  🗑️ DELETE CARD (ใช้ confirm กลางจอ)
@@ -2683,12 +3031,75 @@ body.admin-mode .proj-card:hover .edit-btn { opacity: 1; }
     }
 
     // =====================================================
-    //  🚀 INIT
+    //  🚀 INIT — รอ DOM พร้อมก่อนทำงาน
     // =====================================================
-    trackPageLoad();
-    loadProjectImages();
-    loadAllProjectData();
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initApp);
+    } else {
+      initApp();
+    }
+
+    function initApp() {
+      trackPageLoad();
+      loadProjectImages();
+      loadAllProjectData();
+    }
   </script>
+
+  <!-- ========== PIN PAD (Mobile Admin) ========== -->
+  <div class="pinpad-bg" id="pinpad-bg">
+    <div class="pinpad-box" style="position:relative;overflow:hidden">
+      <!-- LOCKOUT OVERLAY -->
+      <div class="pinlock-overlay" id="pinlock-overlay">
+        <div class="pinlock-scanline"></div>
+        <div class="pinlock-content">
+          <div class="pinlock-badge">⚠ SECURITY LOCKOUT</div>
+          <div class="pinlock-icon"><i class="fas fa-lock"></i></div>
+          <div class="pinlock-title">ACCESS DENIED</div>
+          <div class="pinlock-sub">
+            กรอกรหัสผิดเกิน 5 ครั้ง<br>
+            <span>IP ของคุณถูกบันทึกแล้ว</span>
+          </div>
+          <div class="pinlock-timer-wrap">
+            <div class="pinlock-timer" id="pinlock-timer">05:00</div>
+            <div class="pinlock-timer-label">cooldown remaining</div>
+          </div>
+          <div class="pinlock-bar-wrap">
+            <div class="pinlock-bar" id="pinlock-bar" style="width:100%"></div>
+          </div>
+          <div class="pinlock-ip" id="pinlock-ip-display">IP: กำลังบันทึก...</div>
+        </div>
+      </div>
+      <div class="pinpad-handle"></div>
+      <div class="pinpad-title"><i class="fas fa-shield-halved"></i> Admin Access</div>
+      <div class="pinpad-sub">กรอกรหัสผ่านเพื่อเข้า Admin Mode</div>
+      <div class="pinpad-dots">
+        <div class="pinpad-dot" id="pd0"></div>
+        <div class="pinpad-dot" id="pd1"></div>
+        <div class="pinpad-dot" id="pd2"></div>
+        <div class="pinpad-dot" id="pd3"></div>
+        <div class="pinpad-dot" id="pd4"></div>
+        <div class="pinpad-dot" id="pd5"></div>
+      </div>
+      <div class="pinpad-grid">
+        <button class="pinpad-key" onclick="pinInput('1')">1</button>
+        <button class="pinpad-key" onclick="pinInput('2')">2</button>
+        <button class="pinpad-key" onclick="pinInput('3')">3</button>
+        <button class="pinpad-key" onclick="pinInput('4')">4</button>
+        <button class="pinpad-key" onclick="pinInput('5')">5</button>
+        <button class="pinpad-key" onclick="pinInput('6')">6</button>
+        <button class="pinpad-key" onclick="pinInput('7')">7</button>
+        <button class="pinpad-key" onclick="pinInput('8')">8</button>
+        <button class="pinpad-key" onclick="pinInput('9')">9</button>
+        <button class="pinpad-key empty"></button>
+        <button class="pinpad-key" onclick="pinInput('0')">0</button>
+        <button class="pinpad-key del" onclick="pinDelete()"><i class="fas fa-delete-left"></i></button>
+      </div>
+      <div class="pinpad-error-msg" id="pinpad-error"></div>
+      <button class="pinpad-cancel" onclick="closePinPad()">ยกเลิก</button>
+    </div>
+  </div>
+
 </body>
 
 </html>
