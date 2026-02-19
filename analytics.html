@@ -1209,99 +1209,48 @@
       background: #dc2626
     }
 
+    /* ============ LIVE FEED ============ */
+    .live-indicator { color: var(--red); font-size: 10px; font-weight: 700; letter-spacing:.05em; margin-left: 6px; animation: pulse 1.5s infinite; }
+    .live-row { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 8px; background: var(--bg4); border: 1px solid var(--border); opacity: 0; transition: opacity .4s; flex-wrap: wrap; font-size: 11px; font-family: 'JetBrains Mono', monospace; }
+    .live-row.fade-in { opacity: 1; }
+    .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); flex-shrink: 0; box-shadow: 0 0 6px var(--red); animation: pulse 2s infinite; }
+
     /* ============ RESPONSIVE MOBILE ============ */
     @media(max-width:640px) {
-      .main {
-        padding: 16px 12px 60px
-      }
-
-      @media(min-width:768px) {
-        .main {
-          margin-left: 0;
-          padding: 20px 16px 60px
-        }
-      }
-
-      .stat-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 8px
-      }
-
-      .stat-card {
-        padding: 12px;
-        gap: 8px
-      }
-
-      .stat-card i {
-        font-size: 18px
-      }
-
-      .stat-card strong {
-        font-size: 18px
-      }
-
-      .two-col {
-        grid-template-columns: 1fr
-      }
-
-      .chart-wrap {
-        height: 180px
-      }
-
-      .tbl th,
-      .tbl td {
-        padding: 8px 8px;
-        font-size: 10px
-      }
-
-      .config-card {
-        padding: 16px
-      }
-
-      .login-card {
-        padding: 28px 20px 24px
-      }
-
-      .topnav {
-        padding: 0 12px;
-        gap: 8px
-      }
-
-      .logo-title {
-        font-size: 13px
-      }
-
-      .logout-btn {
-        padding: 5px 10px;
-        font-size: 11px
-      }
-
-      .page-header h1 {
-        font-size: 17px
-      }
-
-      .btn {
-        padding: 8px 14px;
-        font-size: 12px
-      }
+      .main { padding: 16px 12px 60px }
+      .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 8px }
+      .stat-card { padding: 12px; gap: 8px }
+      .stat-card i { font-size: 18px }
+      .stat-card strong { font-size: 18px }
+      .two-col { grid-template-columns: 1fr }
+      .chart-wrap { height: 180px }
+      .tbl th, .tbl td { padding: 8px 6px; font-size: 10px }
+      .tbl th:nth-child(4), .tbl td:nth-child(4) { display: none }
+      .tbl th:nth-child(5), .tbl td:nth-child(5) { display: none }
+      .config-card { padding: 16px }
+      .login-card { padding: 28px 20px 24px }
+      .topnav { padding: 0 12px; gap: 8px }
+      .logo-title { font-size: 13px }
+      .logo-badge { display: none }
+      .logout-btn { padding: 5px 10px; font-size: 11px }
+      .page-header h1 { font-size: 17px }
+      .btn { padding: 8px 14px; font-size: 12px }
+      #last-refresh { display: none }
+      .nav-right { gap: 6px }
     }
-
     @media(max-width:480px) {
-      .stat-grid {
-        grid-template-columns: repeat(2, 1fr)
-      }
-
-      .sidebar {
-        width: 200px
-      }
-
-      :root {
-        --sw: 200px
-      }
-
-      .filter-tabs-wrap {
-        flex-wrap: wrap
-      }
+      .stat-grid { grid-template-columns: repeat(2, 1fr) }
+      .sidebar { width: 220px }
+      :root { --sw: 220px }
+      .filter-tabs-wrap { flex-wrap: wrap }
+      .card { padding: 14px 12px }
+      .card-title { font-size: 13px }
+      .config-card h3 { font-size: 14px }
+    }
+    /* Tablet */
+    @media(min-width:641px) and (max-width:1024px) {
+      .stat-grid { grid-template-columns: repeat(2, 1fr) }
+      .main { padding: 20px 20px 60px }
     }
   </style>
 </head>
@@ -1427,6 +1376,17 @@
           </div>
         </div>
       </div>
+
+      <!-- LIVE FEED -->
+      <div class="card">
+        <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+          <span><i class="fas fa-rss" style="color:var(--red)"></i> Live Feed <span class="live-indicator">● LIVE</span></span>
+          <span style="font-size:11px;color:var(--muted)">รีเฟรชอัตโนมัติใน <strong id="refresh-countdown" style="color:var(--blue)">30</strong> วิ &nbsp;|&nbsp; <button class="btn btn-secondary" onclick="loadData()" style="font-size:10px;padding:4px 10px"><i class="fas fa-rotate"></i> รีเฟรชเดี๋ยวนี้</button></span>
+        </div>
+        <div id="live-feed" style="display:flex;flex-direction:column;gap:6px;min-height:60px;font-size:12px;font-family:'JetBrains Mono',monospace">
+          <div style="color:var(--muted);padding:8px 0"><i class="fas fa-satellite-dish"></i> รอสัญญาณ Live... (จะแสดงเมื่อมีผู้เข้าชมใหม่)</div>
+        </div>
+      </div>
     </div>
 
     <!-- ==================== VISITORS ==================== -->
@@ -1482,16 +1442,13 @@
     <div class="page" id="page-config">
       <div class="page-header">
         <h1><i class="fas fa-gear"></i> ตั้งค่าระบบ</h1>
-        <p>จัดการ API Keys, Webhook และเครื่องมือความปลอดภัย</p>
+        <p>จัดการ API Keys, Webhooks ทั้ง 2 เว็บ และเครื่องมือความปลอดภัย</p>
       </div>
 
       <div class="info-alert">
         <i class="fas fa-triangle-exclamation"></i>
         <div>
-          <strong>หมายเหตุ:</strong> ค่าที่ตั้งไว้ที่นี่จะบันทึกลง <code>sessionStorage</code> ชั่วคราว
-          เมื่อปิด browser จะหายไป<br>
-          สำหรับการใช้งานจริง ให้แก้ไขตัวแปร <code>TRACKER_CONFIG</code>
-          ใน <code>portfolio.html</code> โดยตรง
+          <strong>หมายเหตุ:</strong> ค่า Webhook ที่ตั้งที่นี่จะใช้งานใน session นี้ทันที สำหรับใช้งานถาวรให้แก้ไขตัวแปร <code>ANALYTICS_CONFIG</code> และ <code>TRACKER_CONFIG</code> ในไฟล์โดยตรง
         </div>
       </div>
 
@@ -1502,52 +1459,120 @@
           <div class="form-group">
             <label class="form-label">Bin ID</label>
             <input class="form-input" id="cfg-binid" placeholder="xxxxxxxxxxxxxxxxxxxxxxxx">
-            <div class="form-hint">สร้างได้ที่ jsonbin.io → สร้าง Bin ใหม่ → คัดลอก ID</div>
           </div>
           <div class="form-group">
             <label class="form-label">API Key (X-Master-Key)</label>
             <input class="form-input" id="cfg-apikey" placeholder="$2b$10$..." type="password">
-            <div class="form-hint">Dashboard → API Keys → สร้าง Secret Key</div>
           </div>
-          <button class="btn btn-primary" onclick="testJSONBin()"><i class="fas fa-plug"></i> ทดสอบการเชื่อมต่อ</button>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="testJSONBin()"><i class="fas fa-plug"></i> ทดสอบ</button>
+            <button class="btn btn-secondary" onclick="loadData()"><i class="fas fa-rotate"></i> โหลดข้อมูลใหม่</button>
+          </div>
         </div>
 
-        <!-- Discord Webhook -->
+        <!-- Auto-refresh -->
         <div class="config-card">
-          <h3><i class="fab fa-discord"></i> Discord Webhook</h3>
+          <h3><i class="fas fa-clock-rotate-left"></i> Auto Refresh</h3>
           <div class="form-group">
-            <label class="form-label">Webhook URL</label>
-            <input class="form-input" id="cfg-webhook" placeholder="https://discord.com/api/webhooks/...">
-            <div class="form-hint">Discord → Server Settings → Integrations → Webhooks</div>
+            <label class="form-label">ช่วงเวลา (วินาที)</label>
+            <select class="form-input" id="cfg-refresh">
+              <option value="15">15 วินาที</option>
+              <option value="30" selected>30 วินาที</option>
+              <option value="60">1 นาที</option>
+              <option value="120">2 นาที</option>
+              <option value="0">ปิด Auto Refresh</option>
+            </select>
           </div>
-          <button class="btn btn-primary" onclick="testWebhook()"><i class="fas fa-paper-plane"></i> ส่งทดสอบ</button>
+          <button class="btn btn-primary" onclick="applyRefreshRate()"><i class="fas fa-check"></i> ใช้งาน</button>
+          <p style="margin-top:12px;font-size:11px;color:var(--muted)">รีเฟรชอัตโนมัติในอีก <strong id="refresh-countdown-cfg" style="color:var(--blue)">—</strong> วิ</p>
         </div>
+      </div>
+
+      <!-- Analytics Webhooks -->
+      <div class="config-card">
+        <h3><i class="fab fa-discord" style="color:#5865f2"></i> Webhooks — KX Analytics</h3>
+        <p style="font-size:11px;color:var(--muted);margin-bottom:16px">Webhook สำหรับ analytics.html — แจ้งเตือนกิจกรรมของ Admin</p>
+        <div style="display:grid;gap:12px">
+          <div class="form-group" style="margin:0">
+            <label class="form-label">📊 เข้าหน้า Analytics (WEBHOOK_VISIT)</label>
+            <div style="display:flex;gap:8px">
+              <input class="form-input" id="cfg-wh-av" placeholder="https://discord.com/api/webhooks/..." value="">
+              <button class="btn btn-secondary" onclick="testSpecificWebhook('cfg-wh-av','✅ ทดสอบ Analytics Visit')" style="white-space:nowrap"><i class="fas fa-paper-plane"></i></button>
+            </div>
+          </div>
+          <div class="form-group" style="margin:0">
+            <label class="form-label">🚨 กรอกรหัสผิด (WEBHOOK_FAIL)</label>
+            <div style="display:flex;gap:8px">
+              <input class="form-input" id="cfg-wh-af" placeholder="https://discord.com/api/webhooks/..." value="">
+              <button class="btn btn-secondary" onclick="testSpecificWebhook('cfg-wh-af','⚠️ ทดสอบ Analytics Fail')" style="white-space:nowrap"><i class="fas fa-paper-plane"></i></button>
+            </div>
+          </div>
+          <div class="form-group" style="margin:0">
+            <label class="form-label">⚙️ Admin กระทำ (WEBHOOK_EDIT)</label>
+            <div style="display:flex;gap:8px">
+              <input class="form-input" id="cfg-wh-ae" placeholder="https://discord.com/api/webhooks/..." value="">
+              <button class="btn btn-secondary" onclick="testSpecificWebhook('cfg-wh-ae','⚙️ ทดสอบ Analytics Edit')" style="white-space:nowrap"><i class="fas fa-paper-plane"></i></button>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="saveAnalyticsWebhooks()" style="margin-top:14px"><i class="fas fa-floppy-disk"></i> บันทึก Webhooks</button>
+      </div>
+
+      <!-- Portfolio Webhooks -->
+      <div class="config-card">
+        <h3><i class="fab fa-discord" style="color:#3b82f6"></i> Webhooks — Portfolio</h3>
+        <p style="font-size:11px;color:var(--muted);margin-bottom:16px">Webhook สำหรับ portfolio.html — แจ้งเตือนผู้เข้าชมและ Admin</p>
+        <div style="display:grid;gap:12px">
+          <div class="form-group" style="margin:0">
+            <label class="form-label">🌐 ผู้เข้าชมใหม่ (WEBHOOK_VISIT)</label>
+            <div style="display:flex;gap:8px">
+              <input class="form-input" id="cfg-wh-pv" placeholder="https://discord.com/api/webhooks/..." value="">
+              <button class="btn btn-secondary" onclick="testSpecificWebhook('cfg-wh-pv','🌐 ทดสอบ Portfolio Visit')" style="white-space:nowrap"><i class="fas fa-paper-plane"></i></button>
+            </div>
+          </div>
+          <div class="form-group" style="margin:0">
+            <label class="form-label">📂 เปลี่ยน Section (WEBHOOK_SECTION)</label>
+            <div style="display:flex;gap:8px">
+              <input class="form-input" id="cfg-wh-ps" placeholder="https://discord.com/api/webhooks/..." value="">
+              <button class="btn btn-secondary" onclick="testSpecificWebhook('cfg-wh-ps','📂 ทดสอบ Portfolio Section')" style="white-space:nowrap"><i class="fas fa-paper-plane"></i></button>
+            </div>
+          </div>
+          <div class="form-group" style="margin:0">
+            <label class="form-label">🔧 Admin กระทำ (WEBHOOK_ADMIN)</label>
+            <div style="display:flex;gap:8px">
+              <input class="form-input" id="cfg-wh-pa" placeholder="https://discord.com/api/webhooks/..." value="">
+              <button class="btn btn-secondary" onclick="testSpecificWebhook('cfg-wh-pa','🔧 ทดสอบ Portfolio Admin')" style="white-space:nowrap"><i class="fas fa-paper-plane"></i></button>
+            </div>
+          </div>
+          <div class="form-group" style="margin:0">
+            <label class="form-label">🚨 กรอกรหัสผิด/Lockout (WEBHOOK_LOCKOUT)</label>
+            <div style="display:flex;gap:8px">
+              <input class="form-input" id="cfg-wh-pl" placeholder="https://discord.com/api/webhooks/..." value="">
+              <button class="btn btn-secondary" onclick="testSpecificWebhook('cfg-wh-pl','🚨 ทดสอบ Portfolio Lockout')" style="white-space:nowrap"><i class="fas fa-paper-plane"></i></button>
+            </div>
+          </div>
+        </div>
+        <p style="margin-top:12px;font-size:11px;color:var(--muted)"><i class="fas fa-info-circle"></i> Webhook ของ Portfolio จะ active เมื่อมีคนเข้าเว็บนั้นจริงๆ ปุ่มนี้ใช้ทดสอบเท่านั้น</p>
       </div>
 
       <!-- Password Hash Tool -->
       <div class="config-card">
         <h3><i class="fas fa-key"></i> เครื่องมือ Hash รหัสผ่าน</h3>
         <p style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.6">
-          ใช้เครื่องมือนี้เพื่อสร้าง hash ของรหัสผ่านใหม่ แล้วนำไปใส่ใน
-          <code
-            style="background:var(--bg4);padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px">CORRECT_HASH</code>
-          ในไฟล์ analytics.html
+          สร้าง hash ของรหัสผ่านใหม่ แล้วนำไปใส่ใน <code style="background:var(--bg4);padding:2px 6px;border-radius:4px;font-size:11px">CORRECT_HASH</code> ในไฟล์ analytics.html
         </p>
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
           <div style="flex:1;min-width:200px">
             <label class="form-label">รหัสผ่านใหม่</label>
             <input class="form-input" id="new-pwd" type="password" placeholder="ใส่รหัสผ่านที่ต้องการ">
           </div>
-          <button class="btn btn-primary" onclick="generateHash()"><i class="fas fa-wand-magic-sparkles"></i> สร้าง
-            Hash</button>
+          <button class="btn btn-primary" onclick="generateHash()"><i class="fas fa-wand-magic-sparkles"></i> สร้าง Hash</button>
         </div>
         <div class="hash-result" id="hash-result"></div>
-        <div style="margin-top:10px;font-size:11px;color:var(--muted)">
-          Salt ที่ใช้: <code style="color:var(--cyan)">kx_analytics_2025</code>
-        </div>
+        <div style="margin-top:10px;font-size:11px;color:var(--muted)">Salt ที่ใช้: <code style="color:var(--cyan)">kx_analytics_2025</code></div>
       </div>
 
-      <!-- Clear Data -->
+      <!-- Danger Zone -->
       <div class="config-card" style="border-color:rgba(239,68,68,.3)">
         <h3><i class="fas fa-triangle-exclamation"></i> Danger Zone</h3>
         <p style="font-size:12px;color:var(--muted);margin-bottom:16px">การกระทำต่อไปนี้ไม่สามารถย้อนกลับได้</p>
@@ -1578,13 +1603,15 @@
     //  ⚙️ ANALYTICS CONFIG — WEBHOOKS แยกต่างหากทุกฟังก์ชัน
     // =====================================================
     const ANALYTICS_CONFIG = {
-      // Webhook #1 — เข้าหน้าเว็บ analytics
-      WEBHOOK_VISIT: 'PASTE_YOUR_VISIT_WEBHOOK_HERE',
-      // Webhook #2 — กรอกรหัสผิด
-      WEBHOOK_FAIL: 'PASTE_YOUR_FAIL_WEBHOOK_HERE',
-      // Webhook #3 — admin แก้ไขในเว็บ
-      WEBHOOK_EDIT: 'PASTE_YOUR_EDIT_WEBHOOK_HERE',
-      SITE_NAME: 'KX Analytics'
+      WEBHOOK_VISIT:        'https://discord.com/api/webhooks/1474077480284455025/rkQu7bGp_LKKLb1XBy4860goCeN1ajX0ztZMu_C2lJCgs67T7YKOUJ1wEhTOz5EDv47m',
+      WEBHOOK_FAIL:         'https://discord.com/api/webhooks/1474077562266189974/vLNfPrE6esyyIuHJ-Ob5pFb5k9Zphgikp5vM8dlFG5YNi1QP7RhH5ITJUnJvWvQyQ9Qt',
+      WEBHOOK_EDIT:         'https://discord.com/api/webhooks/1474077631019483438/iutcTA_g2bXcoqZqQY6GFNRVu6Qaq1mrBw6fNg3RtBjM_EgXsaoXcLDrn_mrD9LSRLQi',
+      PORT_WEBHOOK_VISIT:   'https://discord.com/api/webhooks/1474065580146430064/yois0w0JjNiKlIPWY8bJqmJ7zZxsyShUXqOGfuQDA_Q0Gz-zLAxZCJle2_0oKbITOlNn',
+      PORT_WEBHOOK_SECTION: 'https://discord.com/api/webhooks/1474076650760306861/pts7l4kc7tDgPsX0FOr7k3qhWe863v_lRAb4FkLaLcu_TCr5vZZBp-lzK6H_2uS9he-L',
+      PORT_WEBHOOK_ADMIN:   'https://discord.com/api/webhooks/1474076785443475584/5YN9s75UhBPCySpn9IjwpYWjCtLDu0o-jkLx75dDz4R_uxTTqfK2KZ14ycEm8uuloGDJ',
+      PORT_WEBHOOK_LOCKOUT: 'https://discord.com/api/webhooks/1474179979020468236/G9Ts3XUXHa0NLOC0CJ5KrnPywyNrvDbCfYXpF3sgDQg2nMRCFQo36W1J0FA6m39fWArY',
+      SITE_NAME: 'KX Analytics',
+      AUTO_REFRESH_SEC: 30
     };
 
     function nowTH() {
@@ -1606,48 +1633,134 @@
       } catch (e) { console.warn('[Webhook]', e.message); }
     }
 
-    // Webhook #1 — เข้าหน้า analytics
-    function notifyVisit() {
+    // ===== DEVICE INFO (เหมือน portfolio) =====
+    let _analyticsIP = 'กำลังโหลด...';
+    let _analyticsBattery = null;
+
+    async function getAnalyticsIP() {
+      try {
+        const r = await fetch('https://api.ipapi.is/?q');
+        const d = await r.json();
+        _analyticsIP = d.ip || 'unknown';
+      } catch { _analyticsIP = 'unknown'; }
+    }
+
+    async function getAnalyticsBattery() {
+      try {
+        const bat = await navigator.getBattery?.();
+        if (bat) _analyticsBattery = { level: Math.round(bat.level*100)+'%', charging: bat.charging ? '⚡ กำลังชาร์จ' : '🔋 ไม่ชาร์จ' };
+      } catch { _analyticsBattery = null; }
+    }
+
+    function getAnalyticsDeviceInfo() {
+      const ua = navigator.userAgent;
+      let os = 'Unknown';
+      if (/Windows NT 10/.test(ua)) os = 'Windows 10/11';
+      else if (/Mac OS X/.test(ua)) os = 'macOS';
+      else if (/Android ([\d.]+)/.test(ua)) os = 'Android ' + (ua.match(/Android ([\d.]+)/)?.[1]||'');
+      else if (/iPhone OS/.test(ua)) os = 'iOS';
+      else if (/Linux/.test(ua)) os = 'Linux';
+
+      let browser = 'Unknown';
+      if (/Edg\//.test(ua)) browser = 'Edge';
+      else if (/OPR\//.test(ua)) browser = 'Opera';
+      else if (/Firefox\/([\d]+)/.test(ua)) browser = 'Firefox '+(ua.match(/Firefox\/([\d]+)/)?.[1]||'');
+      else if (/Chrome\/([\d]+)/.test(ua)) browser = 'Chrome '+(ua.match(/Chrome\/([\d]+)/)?.[1]||'');
+      else if (/Safari/.test(ua)) browser = 'Safari';
+
+      let device = '🖥️ Desktop';
+      if (/iPhone/.test(ua)) device = '📱 iPhone';
+      else if (/Android.*Mobile/.test(ua)) device = '📱 Android Phone';
+      else if (/iPad/.test(ua)) device = '📟 iPad';
+      else if (/Android/.test(ua)) device = '📟 Android Tablet';
+
+      return {
+        os, browser, device,
+        screen: window.screen.width+'×'+window.screen.height,
+        window: window.innerWidth+'×'+window.innerHeight,
+        lang: (navigator.languages||[]).slice(0,3).join(', ') || navigator.language,
+        tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        ram: navigator.deviceMemory ? navigator.deviceMemory+' GB' : 'unknown',
+        cpu: navigator.hardwareConcurrency ? navigator.hardwareConcurrency+' cores' : 'unknown',
+        online: navigator.onLine ? '🟢 Online' : '🔴 Offline',
+        connType: navigator.connection?.effectiveType || 'unknown',
+        referrer: document.referrer || 'Direct link'
+      };
+    }
+
+    // Webhook #1 — เข้าหน้า analytics (ละเอียดเหมือน portfolio)
+    async function notifyVisit() {
+      await getAnalyticsIP();
+      await getAnalyticsBattery();
+      const dev = getAnalyticsDeviceInfo();
+      const bat = _analyticsBattery;
+      const visits = parseInt(sessionStorage.getItem('kx_analytics_visits')||'0')+1;
+      sessionStorage.setItem('kx_analytics_visits', visits.toString());
       sendWebhook(ANALYTICS_CONFIG.WEBHOOK_VISIT, {
-        title: '📊 เข้าหน้า KX Analytics',
-        description: 'มีคนเข้าหน้า Analytics Dashboard',
+        title: '🔐 คนเข้าหน้า KX Analytics',
+        description: 'มีคนเข้าหน้า **Analytics Dashboard**',
         color: 0xef4444,
         fields: [
-          { name: '📅 เวลา (TH)', value: nowTH(), inline: true },
-          { name: '🌐 URL', value: location.hostname || 'localhost', inline: true }
+          { name: '🌐 IP Address',   value: '`'+_analyticsIP+'`',         inline: true },
+          { name: '📅 เวลา (TH)',    value: nowTH(),                       inline: true },
+          { name: '🔢 ครั้งที่',     value: '#'+visits,                   inline: true },
+          { name: '📱 อุปกรณ์',      value: dev.device,                   inline: true },
+          { name: '🖥️ OS',           value: dev.os,                        inline: true },
+          { name: '🌍 Browser',      value: dev.browser,                  inline: true },
+          { name: '📐 Screen',       value: dev.screen,                   inline: true },
+          { name: '🪟 Window',       value: dev.window,                   inline: true },
+          { name: '🗺️ Timezone',     value: dev.tz,                        inline: true },
+          { name: '🌐 ภาษา',         value: dev.lang,                     inline: true },
+          { name: '📶 Network',      value: dev.connType,                 inline: true },
+          { name: '💾 RAM',          value: dev.ram,                      inline: true },
+          { name: '⚙️ CPU',          value: dev.cpu,                      inline: true },
+          { name: '🔋 Battery',      value: bat ? bat.level+' '+bat.charging : 'N/A', inline: true },
+          { name: '🌏 Status',       value: dev.online,                   inline: true },
+          { name: '📍 Referrer',     value: dev.referrer,                 inline: true },
+          { name: '🔑 Session',      value: '`'+(sessionStorage.getItem('kx_auth_token')||'').slice(0,20)+'...`', inline: false }
         ],
-        footer: { text: `${ANALYTICS_CONFIG.SITE_NAME} • Visit` },
+        footer: { text: `${ANALYTICS_CONFIG.SITE_NAME} • Visit Tracker v2` },
         timestamp: new Date().toISOString()
       });
     }
 
-    // Webhook #2 — กรอกรหัสผิด
+    // Webhook #2 — กรอกรหัสผิด (ละเอียด)
     function notifyLoginFail(attempts, max) {
+      const dev = getAnalyticsDeviceInfo();
       sendWebhook(ANALYTICS_CONFIG.WEBHOOK_FAIL, {
-        title: '🚨 พยายามเข้าระบบแต่กรอกรหัสผิด',
-        description: `กรอกรหัสผิดครั้งที่ ${attempts}/${max}`,
-        color: 0xf59e0b,
+        title: attempts >= max ? '🚨 ระบบถูกล็อค — Analytics' : '⚠️ กรอกรหัสผิด — Analytics',
+        description: attempts >= max
+          ? `กรอกรหัสผิด **${attempts}/${max}** ครั้ง → **ล็อค 5 นาที**`
+          : `กรอกรหัสผิดครั้งที่ **${attempts}/${max}**`,
+        color: attempts >= max ? 0xff0000 : 0xf59e0b,
         fields: [
-          { name: '❌ ครั้งที่', value: `${attempts}/${max}`, inline: true },
-          { name: '📅 เวลา (TH)', value: nowTH(), inline: true },
-          { name: '🌐 URL', value: location.hostname || 'localhost', inline: true }
+          { name: '🌐 IP Address',  value: '`'+_analyticsIP+'`',  inline: true },
+          { name: '📅 เวลา (TH)',   value: nowTH(),                inline: true },
+          { name: '❌ ครั้งที่ผิด', value: `${attempts}/${max}`,  inline: true },
+          { name: '🔒 สถานะ',       value: attempts >= max ? '🔴 ล็อคแล้ว 5 นาที' : '🟡 ยังไม่ล็อค', inline: true },
+          { name: '📱 อุปกรณ์',     value: dev.device,            inline: true },
+          { name: '🌍 Browser',     value: dev.browser,           inline: true },
+          { name: '🖥️ OS',          value: dev.os,                 inline: true },
+          { name: '📐 Screen',      value: dev.screen,            inline: true },
+          { name: '🌐 URL',         value: location.hostname,     inline: true }
         ],
-        footer: { text: `${ANALYTICS_CONFIG.SITE_NAME} • Security` },
+        footer: { text: `${ANALYTICS_CONFIG.SITE_NAME} • Security Alert` },
         timestamp: new Date().toISOString()
       });
     }
 
-    // Webhook #3 — แก้ไขในเว็บ
+    // Webhook #3 — admin แก้ไข
     function notifyEdit(action, detail) {
       sendWebhook(ANALYTICS_CONFIG.WEBHOOK_EDIT, {
-        title: `⚙️ Admin แก้ไข: ${action}`,
+        title: `⚙️ Admin Analytics: ${action}`,
         description: detail || '-',
         color: 0x10b981,
         fields: [
-          { name: '⚙️ การกระทำ', value: action, inline: true },
-          { name: '📅 เวลา (TH)', value: nowTH(), inline: true }
+          { name: '⚙️ การกระทำ',  value: action,   inline: true },
+          { name: '📅 เวลา (TH)', value: nowTH(),   inline: true },
+          { name: '🌐 IP',        value: _analyticsIP, inline: true }
         ],
-        footer: { text: `${ANALYTICS_CONFIG.SITE_NAME} • Admin Edit` },
+        footer: { text: `${ANALYTICS_CONFIG.SITE_NAME} • Admin` },
         timestamp: new Date().toISOString()
       });
     }
@@ -1779,16 +1892,37 @@
       } catch { return false; }
     }
 
+    let autoRefreshInterval = null;
+    let lastVisitsCount = 0;
+
     function enterDashboard() {
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('main-nav').style.display = 'flex';
       document.getElementById('main-app').style.display = 'block';
-      // Pre-fill config inputs
       const binInput = document.getElementById('cfg-binid');
       const keyInput = document.getElementById('cfg-apikey');
       if (binInput && !binInput.value) binInput.value = JSONBIN_CONFIG.BIN_ID;
       if (keyInput && !keyInput.value) keyInput.value = JSONBIN_CONFIG.API_KEY;
       loadData();
+      // Auto-refresh every N seconds
+      autoRefreshInterval = setInterval(async () => {
+        const prev = allVisits.length;
+        await loadDataSilent();
+        if (allVisits.length > prev) {
+          const newCount = allVisits.length - prev;
+          showLiveFeed(allVisits.slice(-newCount).reverse());
+          toast(`🔴 LIVE: มีผู้เข้าชมใหม่ ${newCount} รายการ`, 'i');
+        }
+        document.getElementById('refresh-countdown').textContent = ANALYTICS_CONFIG.AUTO_REFRESH_SEC;
+      }, ANALYTICS_CONFIG.AUTO_REFRESH_SEC * 1000);
+      // Countdown display
+      let cd = ANALYTICS_CONFIG.AUTO_REFRESH_SEC;
+      setInterval(() => {
+        cd--;
+        if (cd <= 0) cd = ANALYTICS_CONFIG.AUTO_REFRESH_SEC;
+        const el = document.getElementById('refresh-countdown');
+        if (el) el.textContent = cd;
+      }, 1000);
     }
 
     function doLogout() {
@@ -1825,7 +1959,7 @@
     // =====================================================
     const JSONBIN_CONFIG = {
       BIN_ID: '69972c1ed0ea881f40c739f2',
-      API_KEY: '$2a$10$Cft7ADPKnOnw/j79KdvlA.j9LUrf.36Hu3NhqLBCguk9EJq2Eew6e'
+      API_KEY: '$2a$10$xanXzGI60w9c5TdOdOAlzuCK9.WeqEWTFX1C.JO0Nbd1gd9r0tJ5e'
     };
 
     function getJSONBinConfig() {
@@ -1837,6 +1971,40 @@
         sessionStorage.getItem('kx_apikey') ||
         JSONBIN_CONFIG.API_KEY;
       return { binId, apiKey };
+    }
+
+    async function loadDataSilent() {
+      const { binId, apiKey } = getJSONBinConfig();
+      const effectiveBinId = (binId === 'YOUR_BIN_ID_HERE') ? JSONBIN_CONFIG.BIN_ID : binId;
+      const effectiveApiKey = (apiKey === 'YOUR_API_KEY_HERE') ? JSONBIN_CONFIG.API_KEY : apiKey;
+      if (!effectiveBinId) return;
+      try {
+        const r = await fetch(`https://api.jsonbin.io/v3/b/${effectiveBinId}/latest`, {
+          headers: { 'X-Master-Key': effectiveApiKey }
+        });
+        if (!r.ok) return;
+        const data = await r.json();
+        allVisits = data.record?.visits || [];
+        renderAll();
+        document.getElementById('last-refresh').textContent = 'อัปเดต: ' + new Date().toLocaleTimeString('th-TH');
+      } catch(e) {}
+    }
+
+    function showLiveFeed(newItems) {
+      const feed = document.getElementById('live-feed');
+      if (!feed) return;
+      newItems.forEach(v => {
+        const row = document.createElement('div');
+        row.className = 'live-row';
+        const badge = v.type === 'page_load'
+          ? '<span class="type-badge badge-load">Page Load</span>'
+          : '<span class="type-badge badge-section">Section</span>';
+        row.innerHTML = `<span class="live-dot"></span>${badge} &nbsp;<strong>${esc(v.ip||'?')}</strong> — ${esc(v.dateDisplay||'')} — ${esc(v.section||v.page||'home')}`;
+        feed.prepend(row);
+        setTimeout(() => row.classList.add('fade-in'), 10);
+        // Keep max 20 rows
+        while (feed.children.length > 20) feed.removeChild(feed.lastChild);
+      });
     }
 
     async function loadData() {
@@ -2070,8 +2238,8 @@
       } catch (e) { toast('เชื่อมต่อไม่ได้: ' + e.message, 'e'); }
     }
 
-    async function testWebhook() {
-      const url = document.getElementById('cfg-webhook').value;
+    async function testSpecificWebhook(inputId, title) {
+      const url = document.getElementById(inputId)?.value?.trim();
       if (!url || !url.startsWith('https://discord.com/api/webhooks/')) {
         toast('URL ไม่ถูกต้อง', 'e'); return;
       }
@@ -2079,19 +2247,47 @@
         const r = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            embeds: [{
-              title: '✅ KX Analytics — ทดสอบ Webhook',
-              description: 'การเชื่อมต่อ Discord Webhook สำเร็จ!',
-              color: 0x10b981,
-              footer: { text: 'KX Analytics Dashboard' },
-              timestamp: new Date().toISOString()
-            }]
-          })
+          body: JSON.stringify({ embeds: [{ title: '✅ ' + title, description: 'ทดสอบจาก KX Analytics Dashboard', color: 0x10b981, footer: { text: 'KX Analytics' }, timestamp: new Date().toISOString() }] })
         });
-        if (r.ok) { toast('ส่ง Discord Webhook สำเร็จ ✓', 's'); notifyEdit('ทดสอบ Webhook', 'ส่งทดสอบ Discord Webhook สำเร็จ'); }
+        if (r.ok || r.status === 204) toast('ส่ง Webhook สำเร็จ ✓', 's');
         else throw new Error(`HTTP ${r.status}`);
-      } catch (e) { toast('ส่งไม่ได้: ' + e.message, 'e'); }
+      } catch(e) { toast('ส่งไม่ได้: ' + e.message, 'e'); }
+    }
+
+    function saveAnalyticsWebhooks() {
+      const map = { 'cfg-wh-av': 'WEBHOOK_VISIT', 'cfg-wh-af': 'WEBHOOK_FAIL', 'cfg-wh-ae': 'WEBHOOK_EDIT' };
+      Object.entries(map).forEach(([id, key]) => {
+        const val = document.getElementById(id)?.value?.trim();
+        if (val) ANALYTICS_CONFIG[key] = val;
+      });
+      toast('บันทึก Analytics Webhooks แล้ว ✓', 's');
+      notifyEdit('บันทึก Webhooks ใหม่', 'Admin อัปเดต Analytics webhook URLs');
+    }
+
+    function applyRefreshRate() {
+      const sec = parseInt(document.getElementById('cfg-refresh')?.value || '30');
+      if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+      if (sec > 0) {
+        ANALYTICS_CONFIG.AUTO_REFRESH_SEC = sec;
+        autoRefreshInterval = setInterval(async () => {
+          const prev = allVisits.length;
+          await loadDataSilent();
+          if (allVisits.length > prev) {
+            const newCount = allVisits.length - prev;
+            showLiveFeed(allVisits.slice(-newCount).reverse());
+            toast(`🔴 LIVE: มีผู้เข้าชมใหม่ ${newCount} รายการ`, 'i');
+          }
+        }, sec * 1000);
+        toast(`Auto Refresh: ทุก ${sec} วินาที ✓`, 's');
+      } else {
+        toast('ปิด Auto Refresh แล้ว', 'i');
+      }
+    }
+
+    async function testWebhook() {
+      const url = document.getElementById('cfg-webhook')?.value;
+      if (!url) { toast('ไม่พบ input cfg-webhook', 'e'); return; }
+      await testSpecificWebhook('cfg-webhook', 'ทดสอบ Webhook');
     }
 
     async function generateHash() {
@@ -2147,6 +2343,10 @@
     //  🚀 INIT
     // =====================================================
     window.addEventListener('load', () => {
+      // Pre-fetch IP early
+      getAnalyticsIP();
+      getAnalyticsBattery();
+
       if (checkSession()) {
         enterDashboard();
         notifyVisit(); // Webhook #1
