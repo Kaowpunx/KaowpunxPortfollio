@@ -1,0 +1,2694 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kaowpunx — Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html {
+      font-size: 16px;
+      -webkit-text-size-adjust: 100%
+    }
+
+    body {
+      font-family: 'Kanit', sans-serif;
+      background: #1c1e20;
+      color: #e2e8f0;
+      min-height: 100vh;
+      overflow-x: hidden
+    }
+
+    :root {
+      --bg: #202224;
+      --bg2: #1c1e20;
+      --bg3: #27292b;
+      --bg4: #2d3035;
+      --border: #2a3448;
+      --border2: #334155;
+      --blue: #3b82f6;
+      --blue2: #1d4ed8;
+      --blue3: #60a5fa;
+      --green: #10b981;
+      --yellow: #f59e0b;
+      --cyan: #06b6d4;
+      --red: #ef4444;
+      --purple: #a855f7;
+      --muted: #64748b;
+      --text: #e2e8f0;
+      --text2: #94a3b8;
+      --nav-h: 56px;
+      --sw: 230px;
+      --r: 12px;
+      --glow-blue: 0 0 20px rgba(59, 130, 246, .3);
+      --glow-green: 0 0 20px rgba(16, 185, 129, .3);
+    }
+
+    ::-webkit-scrollbar {
+      width: 5px
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg2)
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border2);
+      border-radius: 5px
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--blue)
+    }
+
+    .topnav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--nav-h);
+      background: rgba(28, 30, 32, .95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 16px;
+      z-index: 1000
+    }
+
+    .menu-toggle {
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 18px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      transition: background .2s
+    }
+
+    .menu-toggle:hover {
+      background: var(--bg3)
+    }
+
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--blue), var(--blue2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      color: #fff;
+      font-weight: 700;
+      flex-shrink: 0;
+      box-shadow: var(--glow-blue)
+    }
+
+    .logo-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: .02em
+    }
+
+    .logo-title span {
+      color: var(--blue)
+    }
+
+    .nav-right {
+      display: flex;
+      gap: 4px;
+      align-items: center
+    }
+
+    .nav-badge {
+      background: rgba(16, 185, 129, .15);
+      color: var(--green);
+      border: 1px solid rgba(16, 185, 129, .3);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 5px
+    }
+
+    .online-pulse {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse 2s infinite
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: .7;
+        transform: scale(1.2)
+      }
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .6);
+      z-index: 200
+    }
+
+    .sidebar-overlay.active {
+      display: block
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: var(--sw);
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      z-index: 300;
+      display: flex;
+      flex-direction: column;
+      padding-top: calc(var(--nav-h) + 10px);
+      transform: translateX(-100%);
+      transition: transform .25s ease;
+      overflow-y: auto
+    }
+
+    .sidebar.open {
+      transform: translateX(0)
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 0 10px
+    }
+
+    .sidebar-section-label {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      padding: 12px 8px 4px
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      color: var(--text2);
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 2px;
+      transition: all .2s;
+      user-select: none;
+      position: relative;
+      white-space: nowrap;
+      overflow: hidden
+    }
+
+    .nav-item i {
+      font-size: 14px;
+      width: 18px;
+      text-align: center;
+      flex-shrink: 0
+    }
+
+    .nav-item span {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .nav-item:hover {
+      background: var(--bg3);
+      color: var(--text)
+    }
+
+    .nav-item.active {
+      background: rgba(59, 130, 246, .12);
+      color: var(--blue);
+      font-weight: 600
+    }
+
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 20%;
+      bottom: 20%;
+      width: 3px;
+      border-radius: 0 3px 3px 0;
+      background: var(--blue)
+    }
+
+    .sidebar-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 10px
+    }
+
+    .sidebar-footer {
+      padding: 12px 16px;
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .online-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green)
+    }
+
+    .main {
+      margin-top: var(--nav-h);
+      padding: 24px 16px 60px;
+      min-height: calc(100vh - var(--nav-h))
+    }
+
+    @media(min-width:768px) {
+      .sidebar {
+        transform: translateX(0)
+      }
+
+      .sidebar-overlay {
+        display: none !important
+      }
+
+      .menu-toggle {
+        display: none
+      }
+
+      .main {
+        margin-left: var(--sw);
+        padding: 32px 32px 60px
+      }
+    }
+
+    .page {
+      display: none;
+      animation: none
+    }
+
+    .page.active {
+      display: block;
+      animation: pageIn .3s cubic-bezier(.4, 0, .2, 1) both
+    }
+
+    @keyframes pageIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .hero-section {
+      min-height: calc(100vh - var(--nav-h) - 100px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 20px 0
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(59, 130, 246, .1);
+      border: 1px solid rgba(59, 130, 246, .25);
+      color: var(--blue3);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      width: fit-content
+    }
+
+    .hero-name {
+      font-size: clamp(42px, 8vw, 80px);
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 16px;
+      letter-spacing: -.02em
+    }
+
+    .hero-name .gradient {
+      background: linear-gradient(135deg, var(--blue3), var(--cyan), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text
+    }
+
+    .hero-desc {
+      font-size: clamp(14px, 2vw, 18px);
+      color: var(--text2);
+      max-width: 560px;
+      line-height: 1.7;
+      margin-bottom: 32px;
+      font-weight: 300
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 48px
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--blue);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-family: 'Kanit', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all .2s;
+      text-decoration: none
+    }
+
+    .btn-primary:hover {
+      background: var(--blue2);
+      transform: translateY(-2px);
+      box-shadow: var(--glow-blue)
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--text);
+      padding: 12px 24px;
+      border-radius: 10px;
+      border: 1px solid var(--border2);
+      cursor: pointer;
+      font-family: 'Kanit', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all .2s;
+      text-decoration: none
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+      transform: translateY(-2px)
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      max-width: 420px
+    }
+
+    .h-stat {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center
+    }
+
+    .h-stat strong {
+      display: block;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--blue3)
+    }
+
+    .h-stat span {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+      display: block
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .section-title i {
+      color: var(--blue);
+      font-size: 17px
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 10px;
+      margin-bottom: 32px
+    }
+
+    .skill-chip {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all .2s
+    }
+
+    .skill-chip:hover {
+      border-color: var(--blue);
+      transform: translateY(-2px)
+    }
+
+    .skill-chip i {
+      font-size: 16px
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 24px
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 7px;
+      top: 4px;
+      bottom: 4px;
+      width: 2px;
+      background: var(--border2)
+    }
+
+    .tl-item {
+      position: relative;
+      margin-bottom: 24px
+    }
+
+    .tl-dot {
+      position: absolute;
+      left: -24px;
+      top: 4px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid var(--blue);
+      background: var(--bg2)
+    }
+
+    .tl-item.active-tl .tl-dot {
+      background: var(--blue);
+      box-shadow: var(--glow-blue)
+    }
+
+    .tl-date {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 4px
+    }
+
+    .tl-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px
+    }
+
+    .tl-desc {
+      font-size: 12px;
+      color: var(--text2);
+      line-height: 1.6
+    }
+
+    .projects-grid {
+      display: grid;
+      gap: 16px
+    }
+
+    @media(min-width:640px) {
+      .projects-grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+    }
+
+    @media(min-width:1024px) {
+      .projects-grid {
+        grid-template-columns: repeat(3, 1fr)
+      }
+    }
+
+    .proj-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: all .25s;
+      position: relative
+    }
+
+    .proj-card:hover {
+      border-color: var(--blue);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, .4)
+    }
+
+    .proj-thumb {
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      position: relative;
+      overflow: hidden
+    }
+
+    .proj-thumb img.thumb-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 0
+    }
+
+    .proj-thumb .thumb-icon-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      z-index: 1
+    }
+
+    .proj-body {
+      padding: 16px
+    }
+
+    .proj-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px
+    }
+
+    .proj-tag {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: .05em
+    }
+
+    .tag-blue {
+      background: rgba(59, 130, 246, .15);
+      color: var(--blue)
+    }
+
+    .tag-green {
+      background: rgba(16, 185, 129, .15);
+      color: var(--green)
+    }
+
+    .tag-yellow {
+      background: rgba(245, 158, 11, .15);
+      color: var(--yellow)
+    }
+
+    .tag-purple {
+      background: rgba(168, 85, 247, .15);
+      color: var(--purple)
+    }
+
+    .tag-cyan {
+      background: rgba(6, 182, 212, .15);
+      color: var(--cyan)
+    }
+
+    .proj-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px
+    }
+
+    .proj-desc {
+      font-size: 12px;
+      color: var(--text2);
+      line-height: 1.6;
+      margin-bottom: 12px
+    }
+
+    .proj-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .proj-links {
+      display: flex;
+      gap: 8px
+    }
+
+    .proj-link {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--bg4);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text2);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all .2s;
+      text-decoration: none
+    }
+
+    .proj-link:hover {
+      border-color: var(--blue);
+      color: var(--blue)
+    }
+
+    .proj-status {
+      font-size: 10px;
+      color: var(--muted)
+    }
+
+    .edit-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: rgba(20, 22, 24, .85);
+      border: 1px solid var(--border2);
+      color: var(--text2);
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .2s;
+      opacity: 0;
+      z-index: 2
+    }
+
+   .proj-card:hover .edit-btn { opacity: 1; }
+
+    .edit-btn:hover {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #fff
+    }
+
+.proj-card:hover .edit-btn { opacity: 0; }
+body.admin-mode .proj-card:hover .edit-btn { opacity: 1; }
+    .page-header {
+      margin-bottom: 28px
+    }
+
+    .page-header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px
+    }
+
+    .page-header h1 i {
+      color: var(--blue)
+    }
+
+    .page-header p {
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    .page-header .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-family: 'JetBrains Mono', monospace
+    }
+
+    .page-header .breadcrumb span {
+      color: var(--blue)
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 20px
+    }
+
+    .filter-tab {
+      padding: 7px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg3);
+      color: var(--text2);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .2s;
+      font-family: 'Kanit', sans-serif
+    }
+
+    .filter-tab:hover {
+      border-color: var(--blue3);
+      color: var(--text)
+    }
+
+    .filter-tab.active {
+      background: rgba(59, 130, 246, .15);
+      border-color: var(--blue);
+      color: var(--blue);
+      font-weight: 600
+    }
+
+    .dev-stack {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 28px
+    }
+
+    .stack-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px
+    }
+
+    .stack-card h4 {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: 12px
+    }
+
+    .stack-items {
+      display: flex;
+      flex-direction: column;
+      gap: 8px
+    }
+
+    .stack-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px
+    }
+
+    .stack-item i {
+      width: 18px;
+      text-align: center;
+      font-size: 14px
+    }
+
+    .bar-wrap {
+      flex: 1;
+      height: 4px;
+      background: var(--bg4);
+      border-radius: 4px;
+      overflow: hidden
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 1s ease
+    }
+
+    .s-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 32px 0
+    }
+
+    #toast-wrap {
+      position: fixed;
+      bottom: 20px;
+      right: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 9999;
+      width: 280px
+    }
+
+    .toast {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: toastIn .3s ease both;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .4)
+    }
+
+    .toast.hide {
+      animation: toastOut .3s ease both
+    }
+
+    .toast i {
+      font-size: 15px;
+      flex-shrink: 0
+    }
+
+    .toast.s {
+      border-left: 3px solid var(--green)
+    }
+
+    .toast.s i {
+      color: var(--green)
+    }
+
+    .toast.e {
+      border-left: 3px solid var(--red)
+    }
+
+    .toast.e i {
+      color: var(--red)
+    }
+
+    .toast.i {
+      border-left: 3px solid var(--blue)
+    }
+
+    .toast.i i {
+      color: var(--blue)
+    }
+
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translateX(20px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0)
+      }
+    }
+
+    @keyframes toastOut {
+      from {
+        opacity: 1;
+        transform: translateX(0)
+      }
+
+      to {
+        opacity: 0;
+        transform: translateX(20px)
+      }
+    }
+
+    .modal-bg {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .75);
+      z-index: 5000;
+      align-items: center;
+      justify-content: center;
+      padding: 16px
+    }
+
+    .modal-bg.open {
+      display: flex
+    }
+
+    .modal {
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      border-radius: 16px;
+      padding: 28px;
+      width: 100%;
+      max-width: 480px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 32px 80px rgba(0, 0, 0, .5)
+    }
+
+    .modal h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .modal h3 i {
+      color: var(--blue)
+    }
+
+    .form-group {
+      margin-bottom: 14px
+    }
+
+    .form-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text2);
+      margin-bottom: 6px;
+      display: block;
+      text-transform: uppercase;
+      letter-spacing: .04em
+    }
+
+    .form-input,
+    .form-textarea,
+    .form-select {
+      width: 100%;
+      background: var(--bg4);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 10px 14px;
+      color: var(--text);
+      font-family: 'Kanit', sans-serif;
+      font-size: 13px;
+      outline: none;
+      transition: border .2s
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 80px
+    }
+
+    .form-input:focus,
+    .form-textarea:focus,
+    .form-select:focus {
+      border-color: var(--blue)
+    }
+
+    .form-select option {
+      background: var(--bg3)
+    }
+
+    .img-upload-area {
+      border: 2px dashed var(--border2);
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .2s;
+      position: relative;
+      background: var(--bg4)
+    }
+
+    .img-upload-area:hover {
+      border-color: var(--blue);
+      background: rgba(59,130,246,.05)
+    }
+
+    .img-upload-area.drag-over {
+      border-color: var(--blue);
+      background: rgba(59,130,246,.1)
+    }
+
+    .img-upload-area input[type=file] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%
+    }
+
+    .img-upload-icon {
+      font-size: 28px;
+      color: var(--muted);
+      margin-bottom: 8px
+    }
+
+    .img-upload-text {
+      font-size: 12px;
+      color: var(--text2)
+    }
+
+    .img-upload-hint {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 4px
+    }
+
+    .img-preview-wrap {
+      position: relative;
+      margin-top: 10px;
+      display: none
+    }
+
+    .img-preview-wrap.show {
+      display: block
+    }
+
+    .img-preview {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid var(--border2)
+    }
+
+    .img-preview-remove {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      background: rgba(239,68,68,.85);
+      border: none;
+      color: #fff;
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s
+    }
+
+    .img-preview-remove:hover {
+      background: var(--red)
+    }
+
+    .img-or-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0;
+      font-size: 10px;
+      color: var(--muted)
+    }
+
+    .img-or-divider::before,
+    .img-or-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border)
+    }
+
+    .modal-footer {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      justify-content: flex-end
+    }
+
+    .btn-save {
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 9px;
+      font-family: 'Kanit', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px
+    }
+
+    .btn-save:hover {
+      background: var(--blue2)
+    }
+
+    .btn-cancel {
+      background: var(--bg4);
+      color: var(--text2);
+      border: 1px solid var(--border);
+      padding: 10px 18px;
+      border-radius: 9px;
+      font-family: 'Kanit', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all .2s
+    }
+
+    .btn-cancel:hover {
+      border-color: var(--red);
+      color: var(--red)
+    }
+
+    @media(max-width:480px) {
+      .hero-stats {
+        grid-template-columns: repeat(3, 1fr)
+      }
+
+      .h-stat strong {
+        font-size: 20px
+      }
+
+      .hero-btns {
+        flex-direction: column
+      }
+
+      .btn-primary,
+      .btn-secondary {
+        justify-content: center
+      }
+    }
+
+    /* ===== LIGHT MODE ===== */
+    body.light-mode {
+      --bg: #f1f5f9;
+      --bg2: #f8fafc;
+      --bg3: #ffffff;
+      --bg4: #e2e8f0;
+      --border: #cbd5e1;
+      --border2: #94a3b8;
+      --muted: #94a3b8;
+      --text: #0f172a;
+      --text2: #475569;
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+    body.light-mode .topnav { background: rgba(248,250,252,.95); }
+    body.light-mode .sidebar { background: #f8fafc; }
+    body.light-mode .proj-card:hover { box-shadow: 0 12px 40px rgba(0,0,0,.12); }
+    body.light-mode .edit-btn { background: rgba(255,255,255,.9); }
+    body.light-mode .hero-name .gradient {
+      background: linear-gradient(135deg,#2563eb,#0891b2,#7c3aed);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    body.light-mode .modal { background: #fff; }
+    body.light-mode .img-upload-area { background: #f1f5f9; }
+    body.light-mode .admin-toolbar { background: rgba(248,250,252,.97); border-color: #cbd5e1; }
+
+    /* ===== THEME TOGGLE BUTTON ===== */
+    .theme-toggle {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--bg3); border: 1px solid var(--border2);
+      color: var(--text2); font-size: 15px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .2s;
+    }
+    .theme-toggle:hover { border-color: var(--blue); color: var(--blue); }
+
+    /* ===== ADMIN TOOLBAR ===== */
+    .admin-toolbar {
+      display: none;
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      background: rgba(28,30,32,.97); border: 1px solid var(--border2);
+      border-radius: 16px; padding: 10px 16px;
+      align-items: center; gap: 10px;
+      z-index: 4000; box-shadow: 0 8px 32px rgba(0,0,0,.5);
+      backdrop-filter: blur(12px); white-space: nowrap;
+    }
+    body.admin-mode .admin-toolbar { display: flex; }
+    .admin-only { display: none !important; }
+    body.admin-mode .admin-only { display: flex !important; }
+    .nav-item.analytics-link {
+      color: var(--red); margin-top: 4px;
+    }
+    .nav-item.analytics-link:hover { background: rgba(239,68,68,.1); color: var(--red); }
+    .admin-section-label {
+      display: none;
+    }
+    body.admin-mode .admin-section-label { display: block; }
+
+    .admin-toolbar-label {
+      font-size: 10px; font-weight: 700; color: var(--yellow);
+      text-transform: uppercase; letter-spacing: .08em;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .admin-toolbar-divider { width: 1px; height: 24px; background: var(--border2); }
+    .atb-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 14px; border-radius: 9px; border: none;
+      font-family: 'Kanit', sans-serif; font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: all .2s;
+    }
+    .atb-btn.add-fe {
+      background: rgba(59,130,246,.15); color: var(--blue);
+      border: 1px solid rgba(59,130,246,.3);
+    }
+    .atb-btn.add-fe:hover { background: rgba(59,130,246,.3); }
+    .atb-btn.add-dev {
+      background: rgba(168,85,247,.15); color: var(--purple);
+      border: 1px solid rgba(168,85,247,.3);
+    }
+    .atb-btn.add-dev:hover { background: rgba(168,85,247,.3); }
+    .atb-btn.exit-admin {
+      background: rgba(239,68,68,.1); color: var(--red);
+      border: 1px solid rgba(239,68,68,.3);
+    }
+    .atb-btn.exit-admin:hover { background: rgba(239,68,68,.25); }
+
+    /* ===== DELETE BTN ===== */
+    .delete-btn {
+      position: absolute; top: 10px; left: 10px;
+      width: 30px; height: 30px; border-radius: 8px;
+      background: rgba(239,68,68,.85); border: none;
+      color: #fff; font-size: 12px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .2s; opacity: 0; z-index: 2;
+    }
+    body.admin-mode .proj-card:hover .delete-btn { opacity: 1; }
+    .delete-btn:hover { background: var(--red); transform: scale(1.1); }
+
+    /* ===== ADD PROJECT CARD (placeholder) ===== */
+    .proj-card-add {
+      background: transparent;
+      border: 2px dashed var(--border2);
+      border-radius: 14px; min-height: 200px;
+      display: none; align-items: center; justify-content: center;
+      flex-direction: column; gap: 10px;
+      cursor: pointer; transition: all .25s; color: var(--muted);
+      font-size: 13px; font-weight: 500;
+    }
+    body.admin-mode .proj-card-add { display: flex; }
+    .proj-card-add:hover { border-color: var(--blue); color: var(--blue); background: rgba(59,130,246,.04); }
+    .proj-card-add i { font-size: 28px; }
+
+    /* ===== CREATE MODAL extra ===== */
+    .modal-tabs {
+      display: flex; gap: 6px; margin-bottom: 20px;
+    }
+    .modal-tab {
+      flex: 1; padding: 8px; border-radius: 8px; border: 1px solid var(--border);
+      background: var(--bg4); color: var(--text2); font-family: 'Kanit', sans-serif;
+      font-size: 12px; font-weight: 600; cursor: pointer; transition: all .2s; text-align: center;
+    }
+    .modal-tab.active { background: rgba(59,130,246,.15); border-color: var(--blue); color: var(--blue); }
+
+    /* ===== CUSTOM CONFIRM DIALOG ===== */
+    .confirm-bg {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.8); z-index: 9999;
+      align-items: center; justify-content: center; padding: 16px;
+    }
+    .confirm-bg.open { display: flex; }
+    .confirm-box {
+      background: var(--bg3); border: 1px solid var(--border2);
+      border-radius: 16px; padding: 28px 24px 22px;
+      width: 100%; max-width: 340px;
+      box-shadow: 0 32px 80px rgba(0,0,0,.6);
+      animation: confirmIn .25s cubic-bezier(.34,1.56,.64,1) both;
+      text-align: center;
+    }
+    @keyframes confirmIn {
+      from { opacity:0; transform:scale(.88) translateY(16px); }
+      to   { opacity:1; transform:scale(1) translateY(0); }
+    }
+    .confirm-icon {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; color: var(--red); margin: 0 auto 14px;
+    }
+    .confirm-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .confirm-msg { font-size: 12px; color: var(--text2); line-height: 1.6; margin-bottom: 20px; }
+    .confirm-btns { display: flex; gap: 10px; }
+    .confirm-cancel {
+      flex: 1; padding: 10px; border-radius: 9px;
+      background: var(--bg4); border: 1px solid var(--border);
+      color: var(--text2); font-family: 'Kanit',sans-serif;
+      font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s;
+    }
+    .confirm-cancel:hover { border-color: var(--border2); color: var(--text); }
+    .confirm-ok {
+      flex: 1; padding: 10px; border-radius: 9px;
+      background: var(--red); border: none; color: #fff;
+      font-family: 'Kanit',sans-serif; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all .2s;
+    }
+    .confirm-ok:hover { background: #dc2626; }
+
+    /* ===== RESPONSIVE MOBILE ===== */
+    @media(max-width:640px) {
+      .hero-name { font-size: 36px; }
+      .hero-desc { font-size: 13px; }
+      .hero-stats { grid-template-columns: repeat(3,1fr); gap: 8px; }
+      .h-stat { padding: 12px 8px; }
+      .h-stat strong { font-size: 20px; }
+      .h-stat span { font-size: 10px; }
+      .hero-btns { flex-direction: column; }
+      .btn-primary, .btn-secondary { justify-content: center; width: 100%; }
+      .section-title { font-size: 16px; }
+      .skills-grid { grid-template-columns: repeat(2,1fr); }
+      .proj-thumb { height: 140px; }
+      .modal { padding: 20px 16px; border-radius: 14px; max-height: 95vh; }
+      .modal h3 { font-size: 14px; }
+      .admin-toolbar {
+        bottom: 10px; left: 8px; right: 8px; transform: none;
+        border-radius: 14px; padding: 8px 12px; gap: 6px; flex-wrap: wrap;
+        justify-content: center;
+      }
+      .atb-btn { font-size: 11px; padding: 6px 10px; }
+      .admin-toolbar-label { font-size: 9px; }
+      .confirm-box { padding: 22px 18px 18px; }
+      .filter-tabs { gap: 4px; }
+      .filter-tab { padding: 6px 10px; font-size: 11px; }
+      .page-header h1 { font-size: 18px; }
+    }
+    @media(max-width:380px) {
+      .logo-title { font-size: 14px; }
+      .hero-name { font-size: 30px; }
+      .atb-btn span { display: none; }
+    }
+
+    /* ===== MOBILE PIN PAD ===== */
+    .pinpad-bg {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.85); z-index: 9998;
+      align-items: flex-end; justify-content: center;
+    }
+    .pinpad-bg.open { display: flex; }
+    .pinpad-box {
+      background: var(--bg3); border: 1px solid var(--border2);
+      border-radius: 24px 24px 0 0; padding: 24px 20px 44px;
+      width: 100%; max-width: 380px;
+      animation: pinpadIn .3s cubic-bezier(.34,1.2,.64,1) both;
+    }
+    @keyframes pinpadIn {
+      from { transform: translateY(100%); opacity: 0; }
+      to   { transform: translateY(0); opacity: 1; }
+    }
+    .pinpad-handle {
+      width: 40px; height: 4px; border-radius: 4px;
+      background: var(--border2); margin: 0 auto 20px;
+    }
+    .pinpad-title {
+      text-align: center; font-size: 15px; font-weight: 700;
+      margin-bottom: 4px; display: flex; align-items: center;
+      justify-content: center; gap: 8px;
+    }
+    .pinpad-title i { color: var(--yellow); }
+    .pinpad-sub { text-align: center; font-size: 11px; color: var(--muted); margin-bottom: 20px; }
+    .pinpad-dots {
+      display: flex; justify-content: center; gap: 14px; margin-bottom: 24px;
+    }
+    .pinpad-dot {
+      width: 13px; height: 13px; border-radius: 50%;
+      border: 2px solid var(--border2); background: transparent;
+      transition: all .15s;
+    }
+    .pinpad-dot.filled { background: var(--blue); border-color: var(--blue); }
+    .pinpad-dot.error-dot { background: var(--red); border-color: var(--red);
+      animation: shake .3s ease; }
+    @keyframes shake {
+      0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)}
+    }
+    .pinpad-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
+    }
+    .pinpad-key {
+      padding: 18px 10px; border-radius: 14px;
+      background: var(--bg4); border: 1px solid var(--border);
+      color: var(--text); font-family: 'Kanit',sans-serif;
+      font-size: 20px; font-weight: 700; cursor: pointer;
+      transition: all .15s; user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .pinpad-key:active { background: var(--blue); color: #fff;
+      border-color: var(--blue); transform: scale(.93); }
+    .pinpad-key.del { font-size: 16px; color: var(--red); }
+    .pinpad-key.del:active { background: rgba(239,68,68,.2); color: var(--red); }
+    .pinpad-key.empty { background: transparent; border: none; cursor: default; }
+    .pinpad-error-msg {
+      text-align: center; font-size: 12px; color: var(--red);
+      margin-top: 14px; min-height: 18px; font-weight: 600;
+    }
+    .pinpad-cancel {
+      display: block; width: 100%; margin-top: 14px; padding: 12px;
+      border-radius: 12px; background: var(--bg4); border: 1px solid var(--border);
+      color: var(--text2); font-family: 'Kanit',sans-serif; font-size: 13px;
+      font-weight: 600; cursor: pointer; transition: all .2s;
+    }
+    .pinpad-cancel:hover { border-color: var(--red); color: var(--red); }
+
+    /* hold-to-unlock overlay */
+    .hold-ring {
+      display: none; position: fixed; bottom: 30px; left: 50%;
+      transform: translateX(-50%);
+      z-index: 9000; flex-direction: column; align-items: center; gap: 8px;
+      pointer-events: none;
+    }
+    .hold-ring.show { display: flex; }
+    .hold-ring-circle {
+      width: 64px; height: 64px; border-radius: 50%;
+      border: 3px solid var(--border2);
+      border-top-color: var(--yellow);
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .hold-ring-label {
+      font-size: 11px; color: var(--yellow); font-weight: 600;
+      background: rgba(28,30,32,.9); padding: 4px 12px;
+      border-radius: 20px; backdrop-filter: blur(8px);
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="topnav">
+    <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    <div class="logo-wrap">
+      <div class="logo-icon">K</div>
+      <div class="logo-title">Kaow<span>punx</span></div>
+    </div>
+    <div class="nav-right">
+      <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()" title="เปลี่ยนธีม">
+        <i class="fas fa-moon" id="theme-icon"></i>
+      </button>
+      <div class="nav-badge">
+        <div class="online-pulse"></div>Available
+      </div>
+    </div>
+  </nav>
+
+  <div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-label">เมนูหลัก</div>
+      <div class="nav-item active" onclick="showPage('home')" id="nav-home"><i
+          class="fas fa-house"></i><span>หน้าแรก</span></div>
+      <div class="nav-item" onclick="showPage('frontend')" id="nav-frontend"><i
+          class="fas fa-palette"></i><span>งานหน้าบ้าน</span></div>
+      <div class="nav-item" onclick="showPage('developer')" id="nav-developer"><i class="fas fa-code"></i><span>งาน
+          Developer</span></div>
+    </nav>
+    <hr class="sidebar-divider admin-only">
+    <div class="sidebar-section-label admin-section-label">🔐 Admin</div>
+    <a class="nav-item analytics-link admin-only" href="analytics.html" target="_blank">
+      <i class="fas fa-chart-bar"></i><span>Analytics Dashboard</span>
+    </a>
+    <hr class="sidebar-divider">
+    <div class="sidebar-footer">
+      <div class="online-dot"></div>Kaowpunx · 2025
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- ========== HOME ========== -->
+    <div class="page active" id="page-home">
+      <div class="hero-section">
+        <div class="hero-tag"><i class="fas fa-terminal"></i> นักพัฒนา & ผู้ดูแลเซิฟเวอร์</div>
+        <h1 class="hero-name">สวัสดี ผม<br><span class="gradient">Kaowpunx</span></h1>
+        <p class="hero-desc">เชี่ยวชาญทั้งงานหน้าบ้าน (Server Admin) และหลังบ้าน (Dev)</p>
+        <div class="hero-btns">
+          <button class="btn-primary" onclick="showPage('frontend')"><i class="fas fa-images"></i> ดูผลงาน</button>
+          <button class="btn-secondary" onclick="showPage('developer')"><i class="fas fa-code"></i> งาน Dev</button>
+        </div>
+        <div class="hero-stats">
+          <div class="h-stat"><strong>10+</strong><span>โปรเจกต์</span></div>
+          <div class="h-stat"><strong>2+</strong><span>ปีประสบการณ์</span></div>
+          <div class="h-stat"><strong>∞</strong><span>ความตั้งใจ</span></div>
+        </div>
+      </div>
+
+      <hr class="s-divider">
+
+      <div class="section-title"><i class="fas fa-bolt"></i> ทักษะและเครื่องมือ</div>
+      <div class="skills-grid">
+        <div class="skill-chip"><i class="fab fa-html5" style="color:#e34f26"></i> HTML/CSS</div>
+        <div class="skill-chip"><i class="fab fa-js-square" style="color:#f7df1e"></i> JavaScript</div>
+        <div class="skill-chip"><i class="fab fa-python" style="color:#3776ab"></i> Python</div>
+        <div class="skill-chip"><i class="fas fa-robot" style="color:#a855f7"></i> Discord Bot</div>
+      </div>
+
+      <hr class="s-divider">
+
+      <div class="section-title"><i class="fas fa-timeline"></i> ประสบการณ์</div>
+      <div class="timeline">
+        <div class="tl-item active-tl">
+          <div class="tl-dot"></div>
+          <div class="tl-date">2025 — ปัจจุบัน</div>
+          <div class="tl-title">Server Admin</div>
+          <div class="tl-desc">รับงาน Freelance ด้านพัฒนาเว็บและออกแบบ UI/UX และงานดูแลเซิฟเวอร์ Fivem</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-date">2023 — 2024</div>
+          <div class="tl-title">ศึกษา & สร้างโปรเจกต์ส่วนตัว</div>
+          <div class="tl-desc">พัฒนาเซิฟเวอร์ Fivem และเรียนรู้เก็บเกี่ยวประสบการณ์</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-date">2022 — 2023</div>
+          <div class="tl-title">เริ่มต้น — ศึกษา & สร้างโปรเจกต์ส่วนตัว</div>
+          <div class="tl-desc">เรียนรู้การเขียนโค้ดผ่าน YouTube, สร้าง Discord Bot, เว็บส่วนตัว</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== FRONTEND PAGE ========== -->
+    <div class="page" id="page-frontend">
+      <div class="page-header">
+        <div class="breadcrumb"><i class="fas fa-home"></i> / <span>งานหน้าบ้าน</span></div>
+        <h1><i class="fas fa-palette"></i> ผู้ดูแลเซิฟเวอร์</h1>
+        <p>เซิฟเวอร์ Fivem ที่ทำงาน — กด <i class="fas fa-pen" style="font-size:10px;color:var(--blue)"></i>
+          บนการ์ดเพื่อแก้ไข</p>
+      </div>
+
+      <div class="filter-tabs">
+        <button class="filter-tab active" onclick="filterProj(this,'all')">ทั้งหมด</button>
+        <button class="filter-tab" onclick="filterProj(this,'web')">เว็บไซต์</button>
+        <button class="filter-tab" onclick="filterProj(this,'server')">ผู้ดูแลเซิฟเวอร์</button>
+      </div>
+
+      <div class="projects-grid" id="fe-grid">
+
+        <!-- การ์ด 1: ผู้ดูแลเซิฟเวอร์ -->
+        <div class="proj-card" data-cat="server" id="card-fe-1">
+          <button class="delete-btn" onclick="deleteCard('card-fe-1')" title="ลบ"><i class="fas fa-trash"></i></button>
+          <button class="edit-btn" onclick="openEdit('fe','1')" title="แก้ไข"><i class="fas fa-pen"></i></button>
+          <div class="proj-thumb" id="thumb-fe-1" style="background:linear-gradient(135deg,#1e293b,#0f172a)">
+            <div class="thumb-icon-wrap"><i class="fas fa-server" style="color:#3b82f6"></i></div>
+          </div>
+          <div class="proj-body">
+            <div class="proj-tags">
+              <span class="proj-tag tag-blue" id="fe-1-tag1">FiveM</span>
+              <span class="proj-tag tag-green" id="fe-1-tag2">Server Admin</span>
+            </div>
+            <div class="proj-title" id="fe-1-title">ชื่อโปรเจกต์</div>
+            <div class="proj-desc" id="fe-1-desc">กดปุ่ม ✏️ มุมขวาบนของการ์ดเพื่อใส่รายละเอียดโปรเจกต์ของคุณ</div>
+            <div class="proj-footer">
+              <div class="proj-links">
+                <a class="proj-link" id="fe-1-link" href="#" title="ลิงก์"><i class="fas fa-external-link-alt"></i></a>
+              </div>
+              <span class="proj-status" id="fe-1-status">✅ เสร็จแล้ว</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- การ์ด 2: เว็บไซต์ -->
+        <div class="proj-card" data-cat="web" id="card-fe-2">
+          <button class="delete-btn" onclick="deleteCard('card-fe-2')" title="ลบ"><i class="fas fa-trash"></i></button>
+          <button class="edit-btn" onclick="openEdit('fe','2')" title="แก้ไข"><i class="fas fa-pen"></i></button>
+          <div class="proj-thumb" id="thumb-fe-2" style="background:linear-gradient(135deg,#042a2b,#064b44)">
+            <div class="thumb-icon-wrap"><i class="fas fa-globe" style="color:#10b981"></i></div>
+          </div>
+          <div class="proj-body">
+            <div class="proj-tags">
+              <span class="proj-tag tag-green" id="fe-2-tag1">เว็บไซต์</span>
+              <span class="proj-tag tag-yellow" id="fe-2-tag2">HTML/CSS</span>
+            </div>
+            <div class="proj-title" id="fe-2-title">ชื่อโปรเจกต์</div>
+            <div class="proj-desc" id="fe-2-desc">กดปุ่ม ✏️ มุมขวาบนของการ์ดเพื่อใส่รายละเอียดโปรเจกต์ของคุณ</div>
+            <div class="proj-footer">
+              <div class="proj-links">
+                <a class="proj-link" id="fe-2-link" href="#" title="ลิงก์"><i class="fas fa-external-link-alt"></i></a>
+              </div>
+              <span class="proj-status" id="fe-2-status">✅ เสร็จแล้ว</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- Add card placeholder (admin only) -->
+      <div class="proj-card-add" onclick="openCreateModal('fe')">
+        <i class="fas fa-plus-circle"></i><span>เพิ่มโปรเจกต์ใหม่</span>
+      </div>
+
+    </div>
+
+    <!-- ========== DEVELOPER PAGE ========== -->
+    <div class="page" id="page-developer">
+      <div class="page-header">
+        <div class="breadcrumb"><i class="fas fa-home"></i> / <span>งาน Developer</span></div>
+        <h1><i class="fas fa-code"></i> งาน Developer</h1>
+        <p>Bot, Script และระบบต่างๆ — กด <i class="fas fa-pen" style="font-size:10px;color:var(--blue)"></i>
+          บนการ์ดเพื่อแก้ไข</p>
+      </div>
+
+      <div class="section-title" style="margin-bottom:14px"><i class="fas fa-layer-group"></i> Tech Stack</div>
+      <div class="dev-stack" style="margin-bottom:28px">
+        <div class="stack-card">
+          <h4>🌐 Frontend</h4>
+          <div class="stack-items">
+            <div class="stack-item"><i class="fab fa-html5" style="color:#e34f26"></i> HTML/CSS
+              <div class="bar-wrap">
+                <div class="bar-fill" style="width:90%;background:#e34f26"></div>
+              </div>
+            </div>
+            <div class="stack-item"><i class="fab fa-js" style="color:#f7df1e"></i> JavaScript
+              <div class="bar-wrap">
+                <div class="bar-fill" style="width:85%;background:#f7df1e"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title"><i class="fas fa-folder-open"></i> โปรเจกต์ Dev</div>
+      <div class="projects-grid" id="dev-grid">
+
+        <!-- Dev การ์ด 1 -->
+        <div class="proj-card" id="card-dev-1">
+          <button class="delete-btn" onclick="deleteCard('card-dev-1')" title="ลบ"><i class="fas fa-trash"></i></button>
+          <button class="edit-btn" onclick="openEdit('dev','1')" title="แก้ไข"><i class="fas fa-pen"></i></button>
+          <div class="proj-thumb" id="thumb-dev-1" style="background:linear-gradient(135deg,#0a1628,#1e3a5f)">
+            <div class="thumb-icon-wrap"><i class="fas fa-robot" style="color:#5865f2"></i></div>
+          </div>
+          <div class="proj-body">
+            <div class="proj-tags">
+              <span class="proj-tag tag-purple" id="dev-1-tag1">Discord Bot</span>
+              <span class="proj-tag tag-blue" id="dev-1-tag2">Python</span>
+            </div>
+            <div class="proj-title" id="dev-1-title">ชื่อโปรเจกต์</div>
+            <div class="proj-desc" id="dev-1-desc">กดปุ่ม ✏️ มุมขวาบนของการ์ดเพื่อใส่รายละเอียดโปรเจกต์ของคุณ</div>
+            <div class="proj-footer">
+              <div class="proj-links">
+                <a class="proj-link" id="dev-1-link" href="#" title="ลิงก์"><i class="fas fa-external-link-alt"></i></a>
+              </div>
+              <span class="proj-status" id="dev-1-status">✅ Production</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- Add card placeholder (admin only) -->
+      <div class="proj-card-add" onclick="openCreateModal('dev')">
+        <i class="fas fa-plus-circle"></i><span>เพิ่มโปรเจกต์ Dev ใหม่</span>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ========== EDIT MODAL ========== -->
+  <div class="modal-bg" id="edit-modal" onclick="closeModalOutside(event)">
+    <div class="modal">
+      <h3><i class="fas fa-pen-to-square"></i> แก้ไขโปรเจกต์</h3>
+      <input type="hidden" id="edit-page">
+      <input type="hidden" id="edit-num">
+
+      <div class="form-group">
+        <label class="form-label">ชื่อโปรเจกต์</label>
+        <input class="form-input" id="edit-title" placeholder="ชื่อโปรเจกต์...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">คำอธิบาย</label>
+        <textarea class="form-textarea" id="edit-desc" placeholder="รายละเอียดโปรเจกต์..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">แท็ก 1</label>
+        <input class="form-input" id="edit-tag1" placeholder="เช่น FiveM, Discord Bot">
+      </div>
+      <div class="form-group">
+        <label class="form-label">แท็ก 2</label>
+        <input class="form-input" id="edit-tag2" placeholder="เช่น Python, HTML/CSS">
+      </div>
+      <div class="form-group">
+        <label class="form-label">รูปภาพโปรเจกต์</label>
+        <!-- Upload zone -->
+        <div class="img-upload-area" id="upload-drop-zone"
+          ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+          <input type="file" id="edit-img-file" accept="image/*" onchange="handleFileSelect(event)">
+          <div class="img-upload-icon"><i class="fas fa-cloud-arrow-up"></i></div>
+          <div class="img-upload-text">คลิกหรือลากไฟล์รูปมาวางที่นี่</div>
+          <div class="img-upload-hint">PNG, JPG, GIF, WebP — ไม่เกิน 5MB</div>
+        </div>
+        <!-- Preview -->
+        <div class="img-preview-wrap" id="img-preview-wrap">
+          <img class="img-preview" id="img-preview-el" src="" alt="preview">
+          <button class="img-preview-remove" onclick="removeImage()" title="ลบรูป"><i class="fas fa-xmark"></i></button>
+        </div>
+        <!-- OR URL -->
+        <div class="img-or-divider">หรือใส่ URL รูปภาพ</div>
+        <input class="form-input" id="edit-img-url" placeholder="https://example.com/image.png" oninput="handleUrlInput()">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">ลิงก์ (URL)</label>
+        <input class="form-input" id="edit-link" placeholder="https://...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">สถานะ</label>
+        <select class="form-select" id="edit-status">
+          <option value="✅ เสร็จแล้ว">✅ เสร็จแล้ว</option>
+          <option value="🔧 กำลังพัฒนา">🔧 กำลังพัฒนา</option>
+          <option value="✅ Production">✅ Production</option>
+          <option value="⏸️ หยุดพัก">⏸️ หยุดพัก</option>
+        </select>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeModal()">ยกเลิก</button>
+        <button class="btn-save" onclick="saveEdit()"><i class="fas fa-floppy-disk"></i> บันทึก</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== ADMIN TOOLBAR ========== -->
+  <div class="admin-toolbar">
+    <div class="admin-toolbar-label"><i class="fas fa-shield-halved"></i> Admin Mode</div>
+    <div class="admin-toolbar-divider"></div>
+    <button class="atb-btn add-fe" onclick="openCreateModal('fe')"><i class="fas fa-plus"></i> เพิ่ม Frontend</button>
+    <button class="atb-btn add-dev" onclick="openCreateModal('dev')"><i class="fas fa-plus"></i> เพิ่ม Dev</button>
+    <div class="admin-toolbar-divider"></div>
+    <a class="atb-btn" href="analytics.html" target="_blank" style="background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3);text-decoration:none;"><i class="fas fa-chart-bar"></i> Analytics</a>
+    <div class="admin-toolbar-divider"></div>
+    <button class="atb-btn exit-admin" onclick="exitAdmin()"><i class="fas fa-lock"></i> ออกจาก Admin</button>
+  </div>
+
+  <!-- ========== CREATE PROJECT MODAL ========== -->
+  <div class="modal-bg" id="create-modal" onclick="closeCreateOutside(event)">
+    <div class="modal">
+      <h3><i class="fas fa-plus-circle"></i> สร้างโปรเจกต์ใหม่</h3>
+      <input type="hidden" id="create-section">
+
+      <!-- Section tabs -->
+      <div class="modal-tabs">
+        <button class="modal-tab active" id="tab-fe" onclick="switchCreateTab('fe')"><i class="fas fa-palette"></i> Frontend</button>
+        <button class="modal-tab" id="tab-dev" onclick="switchCreateTab('dev')"><i class="fas fa-code"></i> Developer</button>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">ชื่อโปรเจกต์ <span style="color:var(--red)">*</span></label>
+        <input class="form-input" id="create-title" placeholder="ชื่อโปรเจกต์...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">คำอธิบาย</label>
+        <textarea class="form-textarea" id="create-desc" placeholder="รายละเอียดโปรเจกต์..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">แท็ก 1</label>
+        <input class="form-input" id="create-tag1" placeholder="เช่น FiveM, Discord Bot">
+      </div>
+      <div class="form-group">
+        <label class="form-label">แท็ก 2</label>
+        <input class="form-input" id="create-tag2" placeholder="เช่น Python, HTML/CSS">
+      </div>
+      <div class="form-group">
+        <label class="form-label">รูปภาพโปรเจกต์</label>
+        <div class="img-upload-area" id="create-drop-zone"
+          ondragover="handleDragOver2(event)" ondragleave="handleDragLeave2(event)" ondrop="handleDrop2(event)">
+          <input type="file" id="create-img-file" accept="image/*" onchange="handleFileSelect2(event)">
+          <div class="img-upload-icon"><i class="fas fa-cloud-arrow-up"></i></div>
+          <div class="img-upload-text">คลิกหรือลากไฟล์รูปมาวางที่นี่</div>
+          <div class="img-upload-hint">PNG, JPG, GIF, WebP — ไม่เกิน 5MB</div>
+        </div>
+        <div class="img-preview-wrap" id="create-preview-wrap">
+          <img class="img-preview" id="create-preview-el" src="" alt="preview">
+          <button class="img-preview-remove" onclick="removeCreateImage()" title="ลบรูป"><i class="fas fa-xmark"></i></button>
+        </div>
+        <div class="img-or-divider">หรือใส่ URL รูปภาพ</div>
+        <input class="form-input" id="create-img-url" placeholder="https://example.com/image.png" oninput="handleUrlInput2()">
+      </div>
+      <div class="form-group">
+        <label class="form-label">ลิงก์ (URL)</label>
+        <input class="form-input" id="create-link" placeholder="https://...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">หมวดหมู่ (Frontend เท่านั้น)</label>
+        <select class="form-select" id="create-cat">
+          <option value="server">ผู้ดูแลเซิฟเวอร์</option>
+          <option value="web">เว็บไซต์</option>
+          <option value="other">อื่นๆ</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">สถานะ</label>
+        <select class="form-select" id="create-status">
+          <option value="✅ เสร็จแล้ว">✅ เสร็จแล้ว</option>
+          <option value="🔧 กำลังพัฒนา">🔧 กำลังพัฒนา</option>
+          <option value="✅ Production">✅ Production</option>
+          <option value="⏸️ หยุดพัก">⏸️ หยุดพัก</option>
+        </select>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeCreateModal()">ยกเลิก</button>
+        <button class="btn-save" onclick="createProject()"><i class="fas fa-plus"></i> สร้างโปรเจกต์</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== CUSTOM CONFIRM DIALOG ========== -->
+  <div class="confirm-bg" id="confirm-dialog">
+    <div class="confirm-box">
+      <div class="confirm-icon"><i class="fas fa-trash" id="confirm-icon-i"></i></div>
+      <div class="confirm-title" id="confirm-title">ยืนยันการลบ</div>
+      <div class="confirm-msg" id="confirm-msg">คุณแน่ใจหรือไม่?</div>
+      <div class="confirm-btns">
+        <button class="confirm-cancel" onclick="confirmResolve(false)">ยกเลิก</button>
+        <button class="confirm-ok" id="confirm-ok-btn" onclick="confirmResolve(true)">ยืนยัน</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-wrap"></div>
+
+  <script>
+    // =====================================================
+    //  🔔 TRACKER CONFIG — 1 FUNCTION = 1 WEBHOOK
+    // =====================================================
+    const TRACKER_CONFIG = {
+      // Webhook #1 — ผู้เยี่ยมชมเข้าเว็บ
+      WEBHOOK_VISIT:   'https://discord.com/api/webhooks/1474065580146430064/yois0w0JjNiKlIPWY8bJqmJ7zZxsyShUXqOGfuQDA_Q0Gz-zLAxZCJle2_0oKbITOlNn',
+      // Webhook #2 — เปลี่ยน Section
+      WEBHOOK_SECTION: 'https://discord.com/api/webhooks/1474065580146430064/yois0w0JjNiKlIPWY8bJqmJ7zZxsyShUXqOGfuQDA_Q0Gz-zLAxZCJle2_0oKbITOlNn',
+      // Webhook #3 — Admin แก้ไข/สร้าง/ลบโปรเจกต์
+      WEBHOOK_ADMIN:   'https://discord.com/api/webhooks/1474065580146430064/yois0w0JjNiKlIPWY8bJqmJ7zZxsyShUXqOGfuQDA_Q0Gz-zLAxZCJle2_0oKbITOlNn',
+      BIN_ID: '69972c1ed0ea881f40c739f2',
+      API_KEY: '$2a$10$Cft7ADPKnOnw/j79KdvlA.j9LUrf.36Hu3NhqLBCguk9EJq2Eew6e',
+      SITE_NAME: 'Kaowpunx Portfolio',
+      ENABLED: true
+    };
+
+    let visitorIP = 'unknown';
+    let sessionID = crypto.randomUUID?.() || Math.random().toString(36).slice(2);
+
+    async function getIP() {
+      try {
+        const r = await fetch('https://api.ipapi.is/?q');
+        const d = await r.json();
+        visitorIP = d.ip || 'unknown';
+      } catch { visitorIP = 'unknown'; }
+    }
+
+    function sanitize(str) {
+      return String(str).replace(/[`@*_~|]/g, '').slice(0, 200);
+    }
+
+    function nowTH() {
+      return new Intl.DateTimeFormat('th-TH', {
+        year: 'numeric', month: 'short', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        timeZone: 'Asia/Bangkok'
+      }).format(new Date());
+    }
+
+    // ส่ง embed ไปยัง webhook ที่กำหนด
+    async function sendWebhook(webhookUrl, embed) {
+      if (!TRACKER_CONFIG.ENABLED || !webhookUrl) return;
+      try {
+        await fetch(webhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ embeds: [embed] })
+        });
+      } catch (e) { console.warn('[Webhook] error:', e.message); }
+    }
+
+    async function saveToJSONBin(record) {
+      if (!TRACKER_CONFIG.ENABLED) return;
+      try {
+        const getResp = await fetch(`https://api.jsonbin.io/v3/b/${TRACKER_CONFIG.JSONBIN_BIN_ID}/latest`, {
+          headers: { 'X-Master-Key': TRACKER_CONFIG.JSONBIN_API_KEY }
+        });
+        const existing = await getResp.json();
+        const data = existing.record || { visits: [] };
+        data.visits.push(record);
+        if (data.visits.length > 500) data.visits = data.visits.slice(-500);
+        await fetch(`https://api.jsonbin.io/v3/b/${TRACKER_CONFIG.JSONBIN_BIN_ID}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'X-Master-Key': TRACKER_CONFIG.JSONBIN_API_KEY },
+          body: JSON.stringify(data)
+        });
+      } catch (e) { console.warn('[JSONBin] error:', e.message); }
+    }
+
+    // Webhook #1 — เข้าเว็บ (page load)
+    async function trackPageLoad() {
+      await getIP();
+      const ua = navigator.userAgent;
+      const record = {
+        type: 'page_load', ip: visitorIP, session: sessionID,
+        datetime: new Date().toISOString(), dateDisplay: nowTH(),
+        ua, referrer: document.referrer || 'direct', page: 'home'
+      };
+      saveToJSONBin(record);
+      sendWebhook(TRACKER_CONFIG.WEBHOOK_VISIT, {
+        title: '🌐 ผู้เยี่ยมชมใหม่เข้าเว็บ',
+        description: 'มีคนเปิดหน้า Portfolio',
+        color: 0x3b82f6,
+        fields: [
+          { name: '🌐 IP', value: sanitize(visitorIP), inline: true },
+          { name: '📅 เวลา (TH)', value: sanitize(nowTH()), inline: true },
+          { name: '📍 Referrer', value: sanitize(document.referrer || 'Direct'), inline: true },
+          { name: '🔑 Session', value: sanitize(sessionID.slice(0,8) + '...'), inline: true },
+          { name: '📱 Browser', value: sanitize(ua.slice(0,80)), inline: false }
+        ],
+        footer: { text: `${TRACKER_CONFIG.SITE_NAME} • Visit Tracker` },
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    // Webhook #2 — เปลี่ยน Section
+    async function trackSectionChange(sectionName) {
+      const record = {
+        type: 'section_view', ip: visitorIP, session: sessionID,
+        datetime: new Date().toISOString(), dateDisplay: nowTH(),
+        section: sectionName, page: sectionName
+      };
+      saveToJSONBin(record);
+      sendWebhook(TRACKER_CONFIG.WEBHOOK_SECTION, {
+        title: '📂 เข้าดูหมวดหมู่',
+        description: `เปิดดูหมวด **${sectionName}**`,
+        color: 0x10b981,
+        fields: [
+          { name: '📂 หมวดหมู่', value: sanitize(sectionName), inline: true },
+          { name: '🌐 IP', value: sanitize(visitorIP), inline: true },
+          { name: '📅 เวลา (TH)', value: sanitize(nowTH()), inline: true },
+          { name: '🔑 Session', value: sanitize(sessionID.slice(0,8) + '...'), inline: true }
+        ],
+        footer: { text: `${TRACKER_CONFIG.SITE_NAME} • Section Tracker` },
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    // Webhook #3 — Admin กระทำ (แก้ไข / สร้าง / ลบ)
+    async function trackAdminAction(action, detail) {
+      sendWebhook(TRACKER_CONFIG.WEBHOOK_ADMIN, {
+        title: `🔧 Admin: ${sanitize(action)}`,
+        description: sanitize(detail),
+        color: 0xf59e0b,
+        fields: [
+          { name: '⚙️ การกระทำ', value: sanitize(action), inline: true },
+          { name: '📅 เวลา (TH)', value: sanitize(nowTH()), inline: true },
+          { name: '🌐 IP', value: sanitize(visitorIP), inline: true }
+        ],
+        footer: { text: `${TRACKER_CONFIG.SITE_NAME} • Admin Tracker` },
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    // =====================================================
+    //  🧭 PAGE NAVIGATION
+    // =====================================================
+    const pages = ['home', 'frontend', 'developer'];
+    const sectionNames = { home: 'หน้าแรก', frontend: 'งานหน้าบ้าน', developer: 'งาน Developer' };
+    let currentPage = 'home';
+
+    function showPage(id) {
+      if (id === currentPage) return;
+      pages.forEach(p => {
+        document.getElementById(`page-${p}`)?.classList.remove('active');
+        document.getElementById(`nav-${p}`)?.classList.remove('active');
+      });
+      document.getElementById(`page-${id}`)?.classList.add('active');
+      document.getElementById(`nav-${id}`)?.classList.add('active');
+      currentPage = id;
+      closeSidebar();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (id !== 'home') trackSectionChange(sectionNames[id] || id);
+    }
+
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('overlay').classList.toggle('active');
+    }
+    function closeSidebar() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('overlay').classList.remove('active');
+    }
+
+    // =====================================================
+    //  🔔 CUSTOM CONFIRM DIALOG (กลางจอ)
+    // =====================================================
+    let confirmCallback = null;
+
+    function showConfirm(title, msg, okLabel = 'ยืนยัน', iconClass = 'fa-trash') {
+      document.getElementById('confirm-title').textContent = title;
+      document.getElementById('confirm-msg').textContent = msg;
+      document.getElementById('confirm-ok-btn').textContent = okLabel;
+      document.getElementById('confirm-icon-i').className = `fas ${iconClass}`;
+      document.getElementById('confirm-dialog').classList.add('open');
+      return new Promise(resolve => { confirmCallback = resolve; });
+    }
+
+    function confirmResolve(result) {
+      document.getElementById('confirm-dialog').classList.remove('open');
+      if (confirmCallback) { confirmCallback(result); confirmCallback = null; }
+    }
+
+    // =====================================================
+    //  🔔 TOAST
+    // =====================================================
+    function toast(msg, type = 'i') {
+      const wrap = document.getElementById('toast-wrap');
+      const t = document.createElement('div');
+      const icon = type === 's' ? 'fa-circle-check' : type === 'e' ? 'fa-circle-xmark' : 'fa-circle-info';
+      t.className = `toast ${type}`;
+      t.innerHTML = `<i class="fas ${icon}"></i>${msg}`;
+      wrap.appendChild(t);
+      setTimeout(() => { t.classList.add('hide'); setTimeout(() => t.remove(), 300); }, 3000);
+    }
+
+    function filterProj(btn, cat) {
+      document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('#fe-grid .proj-card').forEach(c => {
+        c.style.display = (cat === 'all' || c.dataset.cat === cat) ? '' : 'none';
+      });
+    }
+
+    // =====================================================
+    //  🖼️ IMAGE HELPERS (Edit Modal)
+    // =====================================================
+    let currentImgData = '';
+
+    function handleDragOver(e) {
+      e.preventDefault();
+      document.getElementById('upload-drop-zone').classList.add('drag-over');
+    }
+    function handleDragLeave(e) {
+      document.getElementById('upload-drop-zone').classList.remove('drag-over');
+    }
+    function handleDrop(e) {
+      e.preventDefault();
+      document.getElementById('upload-drop-zone').classList.remove('drag-over');
+      const file = e.dataTransfer.files[0];
+      if (file) processImageFile(file);
+    }
+    function handleFileSelect(e) {
+      const file = e.target.files[0];
+      if (file) processImageFile(file);
+    }
+    function handleUrlInput() {
+      const url = document.getElementById('edit-img-url').value.trim();
+      if (url) { currentImgData = url; showImgPreview(url); }
+      else { currentImgData = ''; hideImgPreview(); }
+    }
+    function processImageFile(file) {
+      if (file.size > 5 * 1024 * 1024) { toast('ไฟล์ใหญ่เกิน 5MB', 'e'); return; }
+      if (!file.type.startsWith('image/')) { toast('กรุณาเลือกไฟล์รูปภาพ', 'e'); return; }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        currentImgData = e.target.result;
+        document.getElementById('edit-img-url').value = '';
+        showImgPreview(currentImgData);
+      };
+      reader.readAsDataURL(file);
+    }
+    function showImgPreview(src) {
+      document.getElementById('img-preview-el').src = src;
+      document.getElementById('img-preview-wrap').classList.add('show');
+    }
+    function hideImgPreview() {
+      document.getElementById('img-preview-wrap').classList.remove('show');
+      document.getElementById('img-preview-el').src = '';
+    }
+    function removeImage() {
+      currentImgData = '';
+      document.getElementById('edit-img-url').value = '';
+      document.getElementById('edit-img-file').value = '';
+      hideImgPreview();
+    }
+
+    function applyImageToThumb(page, num, imgSrc) {
+      const thumb = document.getElementById(`thumb-${page}-${num}`);
+      if (!thumb) return;
+      const oldImg = thumb.querySelector('img.thumb-img');
+      if (oldImg) oldImg.remove();
+      if (imgSrc) {
+        const img = document.createElement('img');
+        img.className = 'thumb-img';
+        img.src = imgSrc;
+        img.alt = 'project thumbnail';
+        thumb.prepend(img);
+        const iconWrap = thumb.querySelector('.thumb-icon-wrap');
+        if (iconWrap) iconWrap.style.opacity = '0';
+      } else {
+        const iconWrap = thumb.querySelector('.thumb-icon-wrap');
+        if (iconWrap) iconWrap.style.opacity = '1';
+      }
+    }
+
+    function saveProjectImages() {
+      const data = {};
+      document.querySelectorAll('.proj-card[id]').forEach(card => {
+        const key = card.id.replace('card-', '');
+        const thumb = document.getElementById(`thumb-${key}`);
+        const img = thumb?.querySelector('img.thumb-img');
+        if (img) data[key] = img.src;
+      });
+      localStorage.setItem('kx_proj_images', JSON.stringify(data));
+    }
+
+    function loadProjectImages() {
+      try {
+        const data = JSON.parse(localStorage.getItem('kx_proj_images') || '{}');
+        Object.entries(data).forEach(([key, src]) => {
+          const parts = key.split('-');
+          const p = parts[0], n = parts[1];
+          if (src) applyImageToThumb(p, n, src);
+        });
+      } catch(e) {}
+    }
+
+    // =====================================================
+    //  ✏️ EDIT MODAL
+    // =====================================================
+    function openEdit(page, num) {
+      document.getElementById('edit-page').value = page;
+      document.getElementById('edit-num').value = num;
+      const p = `${page}-${num}`;
+      document.getElementById('edit-title').value = document.getElementById(`${p}-title`)?.textContent?.trim() || '';
+      document.getElementById('edit-desc').value = document.getElementById(`${p}-desc`)?.textContent?.trim() || '';
+      document.getElementById('edit-tag1').value = document.getElementById(`${p}-tag1`)?.textContent?.trim() || '';
+      document.getElementById('edit-tag2').value = document.getElementById(`${p}-tag2`)?.textContent?.trim() || '';
+      const lnk = document.getElementById(`${p}-link`);
+      document.getElementById('edit-link').value = (lnk && lnk.getAttribute('href') !== '#') ? lnk.href : '';
+      document.getElementById('edit-status').value = document.getElementById(`${p}-status`)?.textContent?.trim() || '✅ เสร็จแล้ว';
+      const thumb = document.getElementById(`thumb-${p}`);
+      const existingImg = thumb?.querySelector('img.thumb-img');
+      currentImgData = existingImg ? existingImg.src : '';
+      document.getElementById('edit-img-url').value = '';
+      document.getElementById('edit-img-file').value = '';
+      if (currentImgData) showImgPreview(currentImgData);
+      else hideImgPreview();
+      document.getElementById('edit-modal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('edit-modal').classList.remove('open');
+    }
+    function closeModalOutside(e) {
+      if (e.target === document.getElementById('edit-modal')) closeModal();
+    }
+
+    function saveEdit() {
+      const page = document.getElementById('edit-page').value;
+      const num = document.getElementById('edit-num').value;
+      const p = `${page}-${num}`;
+      const title = document.getElementById('edit-title').value.trim();
+      const desc = document.getElementById('edit-desc').value.trim();
+      const tag1 = document.getElementById('edit-tag1').value.trim();
+      const tag2 = document.getElementById('edit-tag2').value.trim();
+      const link = document.getElementById('edit-link').value.trim();
+      const status = document.getElementById('edit-status').value;
+
+      if (title) document.getElementById(`${p}-title`).textContent = title;
+      if (desc) document.getElementById(`${p}-desc`).textContent = desc;
+      if (tag1) document.getElementById(`${p}-tag1`).textContent = tag1;
+      if (tag2) document.getElementById(`${p}-tag2`).textContent = tag2;
+      if (link) document.getElementById(`${p}-link`).href = link;
+      document.getElementById(`${p}-status`).textContent = status;
+
+      applyImageToThumb(page, num, currentImgData);
+      saveProjectImages();
+      saveAllProjectData();
+
+      // Webhook #3
+      trackAdminAction('แก้ไขโปรเจกต์', `แก้ไข: "${title}" [${page.toUpperCase()} #${num}]`);
+
+      closeModal();
+      toast('บันทึกเรียบร้อยแล้ว ✓', 's');
+    }
+
+    // =====================================================
+    //  🌙 THEME TOGGLE
+    // =====================================================
+    function toggleTheme() {
+      const isLight = document.body.classList.toggle('light-mode');
+      document.getElementById('theme-icon').className = isLight ? 'fas fa-sun' : 'fas fa-moon';
+      localStorage.setItem('kx_theme', isLight ? 'light' : 'dark');
+    }
+    (function() {
+      const saved = localStorage.getItem('kx_theme');
+      if (saved === 'light') {
+        document.body.classList.add('light-mode');
+        const icon = document.getElementById('theme-icon');
+        if (icon) icon.className = 'fas fa-sun';
+      }
+    })();
+
+    // =====================================================
+    //  🔓 ADMIN MODE — Keyboard + Mobile Hold 15s + PIN
+    // =====================================================
+    const ADMIN_KEY = '141225';
+    const ADMIN_PIN  = '141225';
+    let isAdmin = false;
+
+    // --- Keyboard (Desktop) ---
+    let keyBuffer = '';
+    document.addEventListener('keydown', (e) => {
+      keyBuffer += e.key;
+      if (keyBuffer.length > 10) keyBuffer = keyBuffer.slice(-10);
+      if (keyBuffer.includes(ADMIN_KEY)) {
+        keyBuffer = '';
+        if (isAdmin) { exitAdmin(); } else { toggleAdminMode(true); }
+      }
+    });
+
+    function toggleAdminMode(on) {
+      isAdmin = on;
+      document.body.classList.toggle('admin-mode', on);
+      toast(on ? '🔓 Admin Mode เปิดแล้ว' : '🔒 Admin Mode ปิดแล้ว', on ? 's' : 'i');
+    }
+    function exitAdmin() {
+      isAdmin = false;
+      document.body.classList.remove('admin-mode');
+      toast('🔒 ออกจาก Admin Mode แล้ว', 'i');
+    }
+
+    // --- Mobile: กดค้าง 15 วินาที → PIN Pad ---
+    let holdTimer = null;
+    let holdProgress = null;
+    let holdStart = null;
+
+    function startHold(e) {
+      // ป้องกัน context menu บน mobile
+      e.preventDefault();
+      holdStart = Date.now();
+      document.getElementById('hold-ring').classList.add('show');
+      holdTimer = setTimeout(() => {
+        document.getElementById('hold-ring').classList.remove('show');
+        openPinPad();
+      }, 15000);
+    }
+
+    function cancelHold() {
+      if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
+      document.getElementById('hold-ring').classList.remove('show');
+    }
+
+    // ผูก event บน body สำหรับ mobile
+    document.addEventListener('touchstart', (e) => {
+      // กดค้าง 3 นิ้วพร้อมกัน หรือกดค้างที่ header logo
+      const target = e.target;
+      const isLogo = target.closest('.logo-wrap') || target.closest('.logo-icon');
+      if (isLogo && e.touches.length >= 1) startHold(e);
+    }, { passive: false });
+    document.addEventListener('touchend', cancelHold);
+    document.addEventListener('touchmove', cancelHold);
+
+    // กดค้าง logo บน desktop ด้วย
+    document.addEventListener('DOMContentLoaded', () => {
+      const logoWrap = document.querySelector('.logo-wrap');
+      if (logoWrap) {
+        logoWrap.addEventListener('mousedown', (e) => {
+          // เฉพาะ mobile/touch fallback
+          if (window.matchMedia('(pointer:coarse)').matches) startHold(e);
+        });
+        logoWrap.addEventListener('mouseup', cancelHold);
+        logoWrap.addEventListener('mouseleave', cancelHold);
+        logoWrap.style.cursor = 'pointer';
+        logoWrap.title = 'กดค้าง 15 วินาทีเพื่อเข้า Admin Mode';
+      }
+    });
+
+    // --- PIN Pad ---
+    let pinValue = '';
+
+    function openPinPad() {
+      pinValue = '';
+      updatePinDots();
+      document.getElementById('pinpad-error').textContent = '';
+      document.getElementById('pinpad-bg').classList.add('open');
+    }
+
+    function closePinPad() {
+      document.getElementById('pinpad-bg').classList.remove('open');
+      pinValue = '';
+      updatePinDots();
+      document.getElementById('pinpad-error').textContent = '';
+    }
+
+    function pinInput(digit) {
+      if (pinValue.length >= 6) return;
+      pinValue += digit;
+      updatePinDots();
+      if (pinValue.length === 6) {
+        setTimeout(checkPin, 150);
+      }
+    }
+
+    function pinDelete() {
+      pinValue = pinValue.slice(0, -1);
+      updatePinDots();
+    }
+
+    function updatePinDots() {
+      for (let i = 0; i < 6; i++) {
+        const dot = document.getElementById(`pd${i}`);
+        if (dot) {
+          dot.classList.toggle('filled', i < pinValue.length);
+          dot.classList.remove('error-dot');
+        }
+      }
+    }
+
+    function checkPin() {
+      if (pinValue === ADMIN_PIN) {
+        closePinPad();
+        toggleAdminMode(true);
+      } else {
+        // แสดง error + shake
+        for (let i = 0; i < 6; i++) {
+          const dot = document.getElementById(`pd${i}`);
+          if (dot) { dot.classList.add('error-dot'); dot.classList.remove('filled'); }
+        }
+        document.getElementById('pinpad-error').textContent = 'รหัสไม่ถูกต้อง ลองใหม่';
+        setTimeout(() => {
+          pinValue = '';
+          updatePinDots();
+          document.getElementById('pinpad-error').textContent = '';
+        }, 900);
+      }
+    }
+
+    // =====================================================
+    //  🗑️ DELETE CARD (ใช้ confirm กลางจอ)
+    // =====================================================
+    async function deleteCard(cardId) {
+      const card = document.getElementById(cardId);
+      const title = card?.querySelector('[id$="-title"]')?.textContent || 'โปรเจกต์นี้';
+      const confirmed = await showConfirm(
+        'ยืนยันการลบ',
+        `ต้องการลบ "${title}" หรือไม่? ไม่สามารถย้อนกลับได้`,
+        'ลบเลย', 'fa-trash'
+      );
+      if (!confirmed) return;
+      if (card) {
+        card.style.transition = 'all .3s';
+        card.style.opacity = '0';
+        card.style.transform = 'scale(.9)';
+        setTimeout(() => card.remove(), 300);
+        const key = cardId.replace('card-', '');
+        try {
+          const data = JSON.parse(localStorage.getItem('kx_proj_images') || '{}');
+          delete data[key];
+          localStorage.setItem('kx_proj_images', JSON.stringify(data));
+          saveAllProjectData();
+        } catch(e) {}
+        trackAdminAction('ลบโปรเจกต์', `ลบ: "${title}"`);
+        toast('ลบโปรเจกต์แล้ว', 's');
+      }
+    }
+
+    // =====================================================
+    //  💾 SAVE / LOAD PROJECT DATA
+    // =====================================================
+    function saveAllProjectData() {
+      const cards = document.querySelectorAll('.proj-card[id]');
+      const data = [];
+      cards.forEach(card => {
+        const id = card.id;
+        const parts = id.split('-');
+        const page = parts[1], num = parts[2];
+        const p = `${page}-${num}`;
+        const thumb = document.getElementById(`thumb-${p}`);
+        const imgEl = thumb?.querySelector('img.thumb-img');
+        data.push({
+          id, page, num,
+          cat: card.dataset.cat || '',
+          title: document.getElementById(`${p}-title`)?.textContent || '',
+          desc: document.getElementById(`${p}-desc`)?.textContent || '',
+          tag1: document.getElementById(`${p}-tag1`)?.textContent || '',
+          tag2: document.getElementById(`${p}-tag2`)?.textContent || '',
+          link: document.getElementById(`${p}-link`)?.getAttribute('href') || '#',
+          status: document.getElementById(`${p}-status`)?.textContent || '',
+          img: imgEl ? imgEl.src : '',
+          thumbStyle: thumb?.getAttribute('style') || '',
+          thumbIcon: thumb?.querySelector('.thumb-icon-wrap')?.innerHTML || ''
+        });
+      });
+      localStorage.setItem('kx_proj_data', JSON.stringify(data));
+    }
+
+    function loadAllProjectData() {
+      try {
+        const data = JSON.parse(localStorage.getItem('kx_proj_data') || '[]');
+        data.forEach(d => {
+          if (!document.getElementById(d.id)) {
+            const grid = d.page === 'fe'
+              ? document.getElementById('fe-grid')
+              : document.getElementById('dev-grid');
+            if (grid) {
+              const el = buildCardElement(d.page, d.num, d);
+              const placeholder = grid.querySelector('.proj-card-add');
+              if (placeholder) grid.insertBefore(el, placeholder);
+              else grid.appendChild(el);
+            }
+          } else {
+            const p = `${d.page}-${d.num}`;
+            const titleEl = document.getElementById(`${p}-title`);
+            if (titleEl) {
+              titleEl.textContent = d.title;
+              const els = {
+                desc: document.getElementById(`${p}-desc`),
+                tag1: document.getElementById(`${p}-tag1`),
+                tag2: document.getElementById(`${p}-tag2`),
+                status: document.getElementById(`${p}-status`),
+                link: document.getElementById(`${p}-link`)
+              };
+              if (els.desc) els.desc.textContent = d.desc;
+              if (els.tag1) els.tag1.textContent = d.tag1;
+              if (els.tag2) els.tag2.textContent = d.tag2;
+              if (els.status) els.status.textContent = d.status;
+              if (els.link && d.link && d.link !== '#') els.link.href = d.link;
+            }
+          }
+        });
+      } catch(e) {}
+    }
+
+    // =====================================================
+    //  ➕ CREATE PROJECT
+    // =====================================================
+    let createImgData = '';
+    let projectCounters = { fe: 100, dev: 100 };
+    try {
+      const saved = JSON.parse(localStorage.getItem('kx_counters') || '{}');
+      if (saved.fe) projectCounters.fe = saved.fe;
+      if (saved.dev) projectCounters.dev = saved.dev;
+    } catch(e) {}
+
+    const thumbGradients = [
+      'linear-gradient(135deg,#1e293b,#0f172a)',
+      'linear-gradient(135deg,#042a2b,#064b44)',
+      'linear-gradient(135deg,#0a1628,#1e3a5f)',
+      'linear-gradient(135deg,#1a0533,#3b0764)',
+      'linear-gradient(135deg,#1c0a00,#431407)',
+      'linear-gradient(135deg,#0c1a0c,#14532d)',
+    ];
+    const thumbIconMap = {
+      fe:  [{ icon:'fa-globe',color:'#10b981'},{ icon:'fa-server',color:'#3b82f6'},{ icon:'fa-palette',color:'#a855f7'},{ icon:'fa-display',color:'#06b6d4'}],
+      dev: [{ icon:'fa-robot',color:'#5865f2'},{ icon:'fa-code',color:'#10b981'},{ icon:'fa-terminal',color:'#f59e0b'},{ icon:'fa-gear',color:'#94a3b8'}]
+    };
+
+    function buildCardElement(page, num, opts = {}) {
+      const p = `${page}-${num}`;
+      const gradIdx = parseInt(num) % thumbGradients.length;
+      const icons = thumbIconMap[page] || thumbIconMap.dev;
+      const iconInfo = icons[parseInt(num) % icons.length];
+      const div = document.createElement('div');
+      div.className = 'proj-card';
+      div.id = `card-${p}`;
+      if (opts.cat) div.dataset.cat = opts.cat;
+      const tagClass1 = page === 'fe' ? 'tag-blue' : 'tag-purple';
+      const tagClass2 = page === 'fe' ? 'tag-green' : 'tag-blue';
+      div.innerHTML = `
+        <button class="delete-btn" onclick="deleteCard('card-${p}')" title="ลบ"><i class="fas fa-trash"></i></button>
+        <button class="edit-btn" onclick="openEdit('${page}','${num}')" title="แก้ไข"><i class="fas fa-pen"></i></button>
+        <div class="proj-thumb" id="thumb-${p}" style="background:${thumbGradients[gradIdx]}">
+          <div class="thumb-icon-wrap"><i class="fas ${iconInfo.icon}" style="color:${iconInfo.color}"></i></div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-tags">
+            <span class="proj-tag ${tagClass1}" id="${p}-tag1">${opts.tag1 || 'แท็ก 1'}</span>
+            <span class="proj-tag ${tagClass2}" id="${p}-tag2">${opts.tag2 || 'แท็ก 2'}</span>
+          </div>
+          <div class="proj-title" id="${p}-title">${opts.title || 'ชื่อโปรเจกต์'}</div>
+          <div class="proj-desc" id="${p}-desc">${opts.desc || 'คำอธิบายโปรเจกต์'}</div>
+          <div class="proj-footer">
+            <div class="proj-links">
+              <a class="proj-link" id="${p}-link" href="${opts.link || '#'}" title="ลิงก์" target="_blank"><i class="fas fa-external-link-alt"></i></a>
+            </div>
+            <span class="proj-status" id="${p}-status">${opts.status || '✅ เสร็จแล้ว'}</span>
+          </div>
+        </div>`;
+      return div;
+    }
+
+    function openCreateModal(section) {
+      document.getElementById('create-section').value = section;
+      ['create-title','create-desc','create-tag1','create-tag2','create-link','create-img-url'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      document.getElementById('create-img-file').value = '';
+      document.getElementById('create-status').value = '✅ เสร็จแล้ว';
+      createImgData = '';
+      document.getElementById('create-preview-wrap').classList.remove('show');
+      document.getElementById('create-preview-el').src = '';
+      switchCreateTab(section);
+      document.getElementById('create-modal').classList.add('open');
+    }
+
+    function switchCreateTab(section) {
+      document.getElementById('create-section').value = section;
+      document.getElementById('tab-fe').classList.toggle('active', section === 'fe');
+      document.getElementById('tab-dev').classList.toggle('active', section === 'dev');
+      const catGroup = document.querySelector('#create-cat')?.closest('.form-group');
+      if (catGroup) catGroup.style.display = section === 'fe' ? '' : 'none';
+    }
+
+    function closeCreateModal() {
+      document.getElementById('create-modal').classList.remove('open');
+    }
+    function closeCreateOutside(e) {
+      if (e.target === document.getElementById('create-modal')) closeCreateModal();
+    }
+
+    function handleDragOver2(e) { e.preventDefault(); document.getElementById('create-drop-zone').classList.add('drag-over'); }
+    function handleDragLeave2(e) { document.getElementById('create-drop-zone').classList.remove('drag-over'); }
+    function handleDrop2(e) {
+      e.preventDefault();
+      document.getElementById('create-drop-zone').classList.remove('drag-over');
+      const file = e.dataTransfer.files[0];
+      if (file) processCreateImageFile(file);
+    }
+    function handleFileSelect2(e) { const file = e.target.files[0]; if (file) processCreateImageFile(file); }
+    function handleUrlInput2() {
+      const url = document.getElementById('create-img-url').value.trim();
+      createImgData = url;
+      if (url) { document.getElementById('create-preview-el').src = url; document.getElementById('create-preview-wrap').classList.add('show'); }
+      else document.getElementById('create-preview-wrap').classList.remove('show');
+    }
+    function processCreateImageFile(file) {
+      if (file.size > 5 * 1024 * 1024) { toast('ไฟล์ใหญ่เกิน 5MB', 'e'); return; }
+      if (!file.type.startsWith('image/')) { toast('กรุณาเลือกไฟล์รูปภาพ', 'e'); return; }
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        createImgData = ev.target.result;
+        document.getElementById('create-img-url').value = '';
+        document.getElementById('create-preview-el').src = createImgData;
+        document.getElementById('create-preview-wrap').classList.add('show');
+      };
+      reader.readAsDataURL(file);
+    }
+    function removeCreateImage() {
+      createImgData = '';
+      document.getElementById('create-img-url').value = '';
+      document.getElementById('create-img-file').value = '';
+      document.getElementById('create-preview-wrap').classList.remove('show');
+    }
+
+    function createProject() {
+      const section = document.getElementById('create-section').value;
+      const title = document.getElementById('create-title').value.trim();
+      if (!title) { toast('กรุณาใส่ชื่อโปรเจกต์', 'e'); document.getElementById('create-title').focus(); return; }
+      const desc = document.getElementById('create-desc').value.trim();
+      const tag1 = document.getElementById('create-tag1').value.trim();
+      const tag2 = document.getElementById('create-tag2').value.trim();
+      const link = document.getElementById('create-link').value.trim();
+      const status = document.getElementById('create-status').value;
+      const cat = section === 'fe' ? document.getElementById('create-cat').value : '';
+
+      projectCounters[section]++;
+      const num = projectCounters[section];
+      localStorage.setItem('kx_counters', JSON.stringify(projectCounters));
+
+      const card = buildCardElement(section, num, { title, desc, tag1, tag2, link, status, cat });
+      const grid = document.getElementById(section === 'fe' ? 'fe-grid' : 'dev-grid');
+      const placeholder = grid.querySelector('.proj-card-add');
+      if (placeholder) grid.insertBefore(card, placeholder);
+      else grid.appendChild(card);
+
+      if (createImgData) {
+        const thumb = document.getElementById(`thumb-${section}-${num}`);
+        const img = document.createElement('img');
+        img.className = 'thumb-img'; img.src = createImgData;
+        thumb.prepend(img);
+        const iconWrap = thumb.querySelector('.thumb-icon-wrap');
+        if (iconWrap) iconWrap.style.opacity = '0';
+      }
+
+      card.style.opacity = '0'; card.style.transform = 'scale(.9) translateY(10px)';
+      card.style.transition = 'all .35s cubic-bezier(.34,1.56,.64,1)';
+      requestAnimationFrame(() => { card.style.opacity = '1'; card.style.transform = 'scale(1) translateY(0)'; });
+
+      saveAllProjectData();
+      saveProjectImages();
+      trackAdminAction('สร้างโปรเจกต์ใหม่', `สร้าง: "${title}" [${section.toUpperCase()}] — Status: ${status}`);
+      closeCreateModal();
+      toast(`✅ สร้างโปรเจกต์ "${title}" แล้ว`, 's');
+    }
+
+    // =====================================================
+    //  🚀 INIT
+    // =====================================================
+    trackPageLoad();
+    loadProjectImages();
+    loadAllProjectData();
+  </script>
+</body>
+
+</html>

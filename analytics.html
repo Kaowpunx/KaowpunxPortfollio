@@ -1,0 +1,2171 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kaowpunx Analytics — Secure Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html {
+      font-size: 16px
+    }
+
+    body {
+      font-family: 'Kanit', sans-serif;
+      background: #1c1e20;
+      color: #e2e8f0;
+      min-height: 100vh;
+      overflow-x: hidden
+    }
+
+    :root {
+      --bg: #202224;
+      --bg2: #1c1e20;
+      --bg3: #27292b;
+      --bg4: #2d3035;
+      --border: #2a3448;
+      --border2: #334155;
+      --blue: #3b82f6;
+      --blue2: #1d4ed8;
+      --blue3: #60a5fa;
+      --green: #10b981;
+      --yellow: #f59e0b;
+      --cyan: #06b6d4;
+      --red: #ef4444;
+      --purple: #a855f7;
+      --muted: #64748b;
+      --text: #e2e8f0;
+      --text2: #94a3b8;
+      --nav-h: 56px;
+      --sw: 230px;
+      --r: 12px;
+    }
+
+    ::-webkit-scrollbar {
+      width: 5px
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg2)
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border2);
+      border-radius: 5px
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--blue)
+    }
+
+    /* ============ LOGIN SCREEN ============ */
+    #login-screen {
+      position: fixed;
+      inset: 0;
+      background: var(--bg2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .login-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .login-bg::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(59, 130, 246, .08), transparent 70%);
+      top: -100px;
+      left: -200px;
+      animation: bgFloat 8s ease-in-out infinite;
+    }
+
+    .login-bg::after {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(168, 85, 247, .06), transparent 70%);
+      bottom: -50px;
+      right: -100px;
+      animation: bgFloat 10s ease-in-out infinite reverse;
+    }
+
+    @keyframes bgFloat {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(-30px)
+      }
+    }
+
+    .login-card {
+      position: relative;
+      width: 380px;
+      max-width: calc(100vw - 32px);
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      border-radius: 20px;
+      padding: 40px 36px 36px;
+      box-shadow: 0 32px 80px rgba(0, 0, 0, .5);
+      animation: loginIn .5s cubic-bezier(.34, 1.56, .64, 1) both;
+    }
+
+    @keyframes loginIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(.95)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1)
+      }
+    }
+
+    .login-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--blue), var(--blue2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #fff;
+      margin: 0 auto 20px;
+      box-shadow: 0 0 30px rgba(59, 130, 246, .4);
+    }
+
+    .login-title {
+      font-size: 20px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 4px
+    }
+
+    .login-sub {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+      margin-bottom: 28px;
+      font-family: 'JetBrains Mono', monospace
+    }
+
+    .login-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text2);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .login-input-wrap {
+      position: relative;
+      margin-bottom: 16px
+    }
+
+    .login-input {
+      width: 100%;
+      background: var(--bg4);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 13px 44px 13px 16px;
+      color: var(--text);
+      font-family: 'Kanit', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: all .2s;
+    }
+
+    .login-input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, .15)
+    }
+
+    .login-input.error {
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, .15)
+    }
+
+    .eye-toggle {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 14px;
+      transition: color .2s;
+    }
+
+    .eye-toggle:hover {
+      color: var(--text)
+    }
+
+    .login-err {
+      font-size: 12px;
+      color: var(--red);
+      margin-bottom: 14px;
+      display: none;
+      align-items: center;
+      gap: 6px;
+      background: rgba(239, 68, 68, .08);
+      border: 1px solid rgba(239, 68, 68, .2);
+      border-radius: 8px;
+      padding: 8px 12px;
+    }
+
+    .login-err.show {
+      display: flex
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 10px;
+      background: var(--blue);
+      color: #fff;
+      font-family: 'Kanit', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .login-btn:hover:not(:disabled) {
+      background: var(--blue2);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(59, 130, 246, .4)
+    }
+
+    .login-btn:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+      transform: none
+    }
+
+    .login-attempts {
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 12px;
+      font-family: 'JetBrains Mono', monospace
+    }
+
+    .attempts-bar {
+      width: 100%;
+      height: 3px;
+      background: var(--bg4);
+      border-radius: 3px;
+      margin-top: 8px;
+      overflow: hidden
+    }
+
+    .attempts-fill {
+      height: 100%;
+      background: var(--red);
+      border-radius: 3px;
+      transition: width .4s ease
+    }
+
+    .lock-overlay {
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      background: rgba(239, 68, 68, .05);
+      border: 1px solid rgba(239, 68, 68, .3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      display: none;
+    }
+
+    .lock-overlay.show {
+      display: flex
+    }
+
+    .lock-icon {
+      font-size: 32px;
+      color: var(--red)
+    }
+
+    .lock-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--red)
+    }
+
+    .lock-timer {
+      font-size: 20px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text)
+    }
+
+    /* ============ TOP NAV ============ */
+    .topnav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--nav-h);
+      background: rgba(28, 30, 32, .95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 16px;
+      z-index: 1000;
+    }
+
+    .menu-toggle {
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 18px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      transition: background .2s
+    }
+
+    .menu-toggle:hover {
+      background: var(--bg3)
+    }
+
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #ef4444, #991b1b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #fff;
+      flex-shrink: 0;
+      box-shadow: 0 0 20px rgba(239, 68, 68, .3);
+    }
+
+    .logo-title {
+      font-size: 15px;
+      font-weight: 700
+    }
+
+    .logo-badge {
+      font-size: 9px;
+      font-weight: 700;
+      background: rgba(239, 68, 68, .15);
+      color: var(--red);
+      border: 1px solid rgba(239, 68, 68, .3);
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-left: 6px
+    }
+
+    .nav-right {
+      display: flex;
+      gap: 8px;
+      align-items: center
+    }
+
+    .logout-btn {
+      background: rgba(239, 68, 68, .1);
+      border: 1px solid rgba(239, 68, 68, .25);
+      color: var(--red);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-family: 'Kanit', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .logout-btn:hover {
+      background: rgba(239, 68, 68, .2)
+    }
+
+    /* ============ SIDEBAR ============ */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .6);
+      z-index: 200
+    }
+
+    .sidebar-overlay.active {
+      display: block
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: var(--sw);
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      z-index: 300;
+      display: flex;
+      flex-direction: column;
+      padding-top: calc(var(--nav-h) + 10px);
+      transform: translateX(-100%);
+      transition: transform .25s ease;
+      overflow-y: auto;
+    }
+
+    .sidebar.open {
+      transform: translateX(0)
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 0 10px
+    }
+
+    .sidebar-section-label {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      padding: 12px 8px 4px
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      color: var(--text2);
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 2px;
+      transition: all .2s;
+      user-select: none;
+      white-space: nowrap;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .nav-item i {
+      font-size: 14px;
+      width: 18px;
+      text-align: center;
+      flex-shrink: 0
+    }
+
+    .nav-item span {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .nav-item:hover {
+      background: var(--bg3);
+      color: var(--text)
+    }
+
+    .nav-item.active {
+      background: rgba(239, 68, 68, .1);
+      color: var(--red);
+      font-weight: 600
+    }
+
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 20%;
+      bottom: 20%;
+      width: 3px;
+      border-radius: 0 3px 3px 0;
+      background: var(--red)
+    }
+
+    .sidebar-footer {
+      padding: 12px 16px;
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-top: 1px solid var(--border)
+    }
+
+    .online-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green)
+    }
+
+    /* ============ MAIN ============ */
+    .main {
+      margin-top: var(--nav-h);
+      padding: 24px 16px 60px;
+      min-height: calc(100vh - var(--nav-h));
+      display: none
+    }
+
+    @media(min-width:768px) {
+      .sidebar {
+        transform: translateX(0)
+      }
+
+      .sidebar-overlay {
+        display: none !important
+      }
+
+      .menu-toggle {
+        display: none
+      }
+
+      .main {
+        margin-left: var(--sw);
+        padding: 32px 32px 60px
+      }
+    }
+
+    /* ============ PAGE ============ */
+    .page {
+      display: none
+    }
+
+    .page.active {
+      display: block;
+      animation: pageIn .3s cubic-bezier(.4, 0, .2, 1) both
+    }
+
+    @keyframes pageIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .page-header {
+      margin-bottom: 24px
+    }
+
+    .page-header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px
+    }
+
+    .page-header h1 i {
+      color: var(--red)
+    }
+
+    .page-header p {
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    /* ============ STAT GRID ============ */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 20px
+    }
+
+    @media(min-width:560px) {
+      .stat-grid {
+        grid-template-columns: repeat(4, 1fr)
+      }
+    }
+
+    .stat-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      right: -20px;
+      top: -20px;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      opacity: .06
+    }
+
+    .stat-card i {
+      font-size: 22px;
+      flex-shrink: 0
+    }
+
+    .stat-card div {
+      display: flex;
+      flex-direction: column;
+      gap: 2px
+    }
+
+    .stat-card span {
+      font-size: 11px;
+      color: var(--muted)
+    }
+
+    .stat-card strong {
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1
+    }
+
+    .c-blue {
+      border-left: 3px solid var(--blue)
+    }
+
+    .c-blue i,
+    .c-blue strong {
+      color: var(--blue)
+    }
+
+    .c-green {
+      border-left: 3px solid var(--green)
+    }
+
+    .c-green i,
+    .c-green strong {
+      color: var(--green)
+    }
+
+    .c-yellow {
+      border-left: 3px solid var(--yellow)
+    }
+
+    .c-yellow i,
+    .c-yellow strong {
+      color: var(--yellow)
+    }
+
+    .c-red {
+      border-left: 3px solid var(--red)
+    }
+
+    .c-red i,
+    .c-red strong {
+      color: var(--red)
+    }
+
+    /* ============ CARD ============ */
+    .card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 20px;
+      margin-bottom: 16px
+    }
+
+    .card-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text2);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 16px
+    }
+
+    .card-title i {
+      color: var(--red)
+    }
+
+    /* ============ CHART ============ */
+    .chart-wrap {
+      position: relative;
+      height: 220px
+    }
+
+    /* ============ TABLE ============ */
+    .tbl-wrap {
+      overflow-x: auto
+    }
+
+    .tbl {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px
+    }
+
+    .tbl th {
+      padding: 10px 12px;
+      text-align: left;
+      color: var(--muted);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg4);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      white-space: nowrap
+    }
+
+    .tbl td {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(42, 52, 72, .5);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      vertical-align: middle
+    }
+
+    .tbl tr:hover td {
+      background: rgba(59, 130, 246, .04)
+    }
+
+    .tbl tr:last-child td {
+      border-bottom: none
+    }
+
+    .type-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      font-family: 'Kanit', sans-serif
+    }
+
+    .badge-load {
+      background: rgba(59, 130, 246, .12);
+      color: var(--blue)
+    }
+
+    .badge-section {
+      background: rgba(16, 185, 129, .12);
+      color: var(--green)
+    }
+
+    /* ============ CONFIG PAGE ============ */
+    .config-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 16px
+    }
+
+    .config-card h3 {
+      font-size: 15px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px
+    }
+
+    .config-card h3 i {
+      color: var(--red)
+    }
+
+    .form-group {
+      margin-bottom: 14px
+    }
+
+    .form-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text2);
+      margin-bottom: 6px;
+      display: block;
+      text-transform: uppercase;
+      letter-spacing: .05em
+    }
+
+    .form-input {
+      width: 100%;
+      background: var(--bg4);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 11px 14px;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      outline: none;
+      transition: border .2s;
+    }
+
+    .form-input:focus {
+      border-color: var(--blue)
+    }
+
+    .form-hint {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 4px
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 10px 20px;
+      border-radius: 9px;
+      border: none;
+      font-family: 'Kanit', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .btn-danger {
+      background: var(--red);
+      color: #fff
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+      transform: translateY(-1px)
+    }
+
+    .btn-primary {
+      background: var(--blue);
+      color: #fff
+    }
+
+    .btn-primary:hover {
+      background: var(--blue2);
+      transform: translateY(-1px)
+    }
+
+    .btn-secondary {
+      background: var(--bg4);
+      color: var(--text);
+      border: 1px solid var(--border)
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--blue);
+      color: var(--blue)
+    }
+
+    /* ============ HASH TOOL ============ */
+    .hash-result {
+      background: var(--bg4);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 12px 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--green);
+      margin-top: 8px;
+      word-break: break-all;
+      display: none;
+    }
+
+    .hash-result.show {
+      display: block
+    }
+
+    /* ============ INFO ALERT ============ */
+    .info-alert {
+      background: rgba(245, 158, 11, .06);
+      border: 1px solid rgba(245, 158, 11, .25);
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 12px;
+      color: var(--yellow);
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+
+    .info-alert i {
+      flex-shrink: 0;
+      margin-top: 1px
+    }
+
+    /* ============ TOAST ============ */
+    #toast-wrap {
+      position: fixed;
+      bottom: 20px;
+      right: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 9999;
+      width: 280px
+    }
+
+    .toast {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: toastIn .3s ease both;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .4);
+    }
+
+    .toast.hide {
+      animation: toastOut .3s ease both
+    }
+
+    .toast i {
+      font-size: 15px;
+      flex-shrink: 0
+    }
+
+    .toast.s {
+      border-left: 3px solid var(--green)
+    }
+
+    .toast.s i {
+      color: var(--green)
+    }
+
+    .toast.e {
+      border-left: 3px solid var(--red)
+    }
+
+    .toast.e i {
+      color: var(--red)
+    }
+
+    .toast.i {
+      border-left: 3px solid var(--blue)
+    }
+
+    .toast.i i {
+      color: var(--blue)
+    }
+
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translateX(20px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0)
+      }
+    }
+
+    @keyframes toastOut {
+      from {
+        opacity: 1
+      }
+
+      to {
+        opacity: 0;
+        transform: translateX(20px)
+      }
+    }
+
+    /* ============ EMPTY STATE ============ */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted)
+    }
+
+    .empty-state i {
+      font-size: 48px;
+      margin-bottom: 16px;
+      display: block;
+      opacity: .3
+    }
+
+    .empty-state p {
+      font-size: 14px
+    }
+
+    /* ============ LOADING ============ */
+    .loading-dots {
+      display: inline-flex;
+      gap: 4px
+    }
+
+    .loading-dots span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--blue);
+      animation: dot 1.2s ease-in-out infinite
+    }
+
+    .loading-dots span:nth-child(2) {
+      animation-delay: .2s
+    }
+
+    .loading-dots span:nth-child(3) {
+      animation-delay: .4s
+    }
+
+    @keyframes dot {
+
+      0%,
+      80%,
+      100% {
+        transform: scale(.8);
+        opacity: .5
+      }
+
+      40% {
+        transform: scale(1);
+        opacity: 1
+      }
+    }
+
+    /* ============ SECTION GRID ============ */
+    .two-col {
+      display: grid;
+      gap: 16px
+    }
+
+    @media(min-width:768px) {
+      .two-col {
+        grid-template-columns: 1fr 1fr
+      }
+    }
+
+    /* ============ CONFIRM DIALOG ============ */
+    .confirm-bg {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .8);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 16px
+    }
+
+    .confirm-bg.open {
+      display: flex
+    }
+
+    .confirm-box {
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      border-radius: 16px;
+      padding: 28px 24px 22px;
+      width: 100%;
+      max-width: 340px;
+      box-shadow: 0 32px 80px rgba(0, 0, 0, .6);
+      animation: confirmIn .25s cubic-bezier(.34, 1.56, .64, 1) both;
+      text-align: center
+    }
+
+    @keyframes confirmIn {
+      from {
+        opacity: 0;
+        transform: scale(.88) translateY(16px)
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0)
+      }
+    }
+
+    .confirm-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: rgba(239, 68, 68, .12);
+      border: 1px solid rgba(239, 68, 68, .25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: var(--red);
+      margin: 0 auto 14px
+    }
+
+    .confirm-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px
+    }
+
+    .confirm-msg {
+      font-size: 12px;
+      color: var(--text2);
+      line-height: 1.6;
+      margin-bottom: 20px
+    }
+
+    .confirm-btns {
+      display: flex;
+      gap: 10px
+    }
+
+    .confirm-cancel {
+      flex: 1;
+      padding: 10px;
+      border-radius: 9px;
+      background: var(--bg4);
+      border: 1px solid var(--border);
+      color: var(--text2);
+      font-family: 'Kanit', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s
+    }
+
+    .confirm-cancel:hover {
+      border-color: var(--border2);
+      color: var(--text)
+    }
+
+    .confirm-ok {
+      flex: 1;
+      padding: 10px;
+      border-radius: 9px;
+      background: var(--red);
+      border: none;
+      color: #fff;
+      font-family: 'Kanit', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s
+    }
+
+    .confirm-ok:hover {
+      background: #dc2626
+    }
+
+    /* ============ RESPONSIVE MOBILE ============ */
+    @media(max-width:640px) {
+      .main {
+        padding: 16px 12px 60px
+      }
+
+      @media(min-width:768px) {
+        .main {
+          margin-left: 0;
+          padding: 20px 16px 60px
+        }
+      }
+
+      .stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px
+      }
+
+      .stat-card {
+        padding: 12px;
+        gap: 8px
+      }
+
+      .stat-card i {
+        font-size: 18px
+      }
+
+      .stat-card strong {
+        font-size: 18px
+      }
+
+      .two-col {
+        grid-template-columns: 1fr
+      }
+
+      .chart-wrap {
+        height: 180px
+      }
+
+      .tbl th,
+      .tbl td {
+        padding: 8px 8px;
+        font-size: 10px
+      }
+
+      .config-card {
+        padding: 16px
+      }
+
+      .login-card {
+        padding: 28px 20px 24px
+      }
+
+      .topnav {
+        padding: 0 12px;
+        gap: 8px
+      }
+
+      .logo-title {
+        font-size: 13px
+      }
+
+      .logout-btn {
+        padding: 5px 10px;
+        font-size: 11px
+      }
+
+      .page-header h1 {
+        font-size: 17px
+      }
+
+      .btn {
+        padding: 8px 14px;
+        font-size: 12px
+      }
+    }
+
+    @media(max-width:480px) {
+      .stat-grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .sidebar {
+        width: 200px
+      }
+
+      :root {
+        --sw: 200px
+      }
+
+      .filter-tabs-wrap {
+        flex-wrap: wrap
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ==================== LOGIN SCREEN ==================== -->
+  <div id="login-screen">
+    <div class="login-bg"></div>
+    <div class="login-card">
+      <div class="login-icon"><i class="fas fa-shield-halved"></i></div>
+      <div class="login-title">KX Analytics</div>
+      <div class="login-sub">Secure Dashboard — Admin Only</div>
+
+      <div class="login-label"><i class="fas fa-key"></i> รหัสผ่าน</div>
+      <div class="login-input-wrap">
+        <input type="password" class="login-input" id="pwd-input" placeholder="กรอกรหัสผ่าน..."
+          onkeydown="if(event.key==='Enter')doLogin()">
+        <button class="eye-toggle" onclick="togglePwd()"><i id="eye-icon" class="fas fa-eye"></i></button>
+      </div>
+
+      <div class="login-err" id="login-err">
+        <i class="fas fa-triangle-exclamation"></i>
+        <span id="err-msg">รหัสผ่านไม่ถูกต้อง</span>
+      </div>
+
+      <button class="login-btn" id="login-btn" onclick="doLogin()">
+        <i class="fas fa-arrow-right-to-bracket"></i> เข้าสู่ระบบ
+      </button>
+
+      <div class="login-attempts" id="attempts-info"></div>
+      <div class="attempts-bar" id="attempts-bar-wrap" style="display:none">
+        <div class="attempts-fill" id="attempts-fill"></div>
+      </div>
+
+      <!-- Lockout overlay -->
+      <div class="lock-overlay" id="lock-overlay">
+        <div class="lock-icon"><i class="fas fa-lock"></i></div>
+        <div class="lock-text">ระบบถูกล็อค</div>
+        <div class="lock-timer" id="lock-timer">--:--</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px">พยายามใหม่อีกครั้งใน</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MAIN APP (hidden until login) ==================== -->
+  <nav class="topnav" id="main-nav" style="display:none">
+    <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    <div class="logo-wrap">
+      <div class="logo-icon"><i class="fas fa-chart-bar" style="font-size:14px"></i></div>
+      <div class="logo-title">KX Analytics <span class="logo-badge">SECURE</span></div>
+    </div>
+    <div class="nav-right">
+      <span style="font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace" id="last-refresh"></span>
+      <a href="portfolio.html"
+        style="background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);color:#3b82f6;padding:6px 14px;border-radius:8px;font-family:'Kanit',sans-serif;font-size:12px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:all .2s;"
+        onmouseover="this.style.background='rgba(59,130,246,.2)'"
+        onmouseout="this.style.background='rgba(59,130,246,.1)'"><i class="fas fa-arrow-left"></i> Portfolio</a>
+      <button class="logout-btn" onclick="doLogout()"><i class="fas fa-right-from-bracket"></i> ออก</button>
+    </div>
+  </nav>
+
+  <div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-label">เมนูหลัก</div>
+      <div class="nav-item active" onclick="showPage('dashboard')" id="nav-dashboard"><i
+          class="fas fa-gauge-high"></i><span>Dashboard</span></div>
+      <div class="nav-item" onclick="showPage('visitors')" id="nav-visitors"><i
+          class="fas fa-users"></i><span>ผู้เยี่ยมชม</span></div>
+      <div class="nav-item" onclick="showPage('logs')" id="nav-logs"><i class="fas fa-list-check"></i><span>Event
+          Logs</span></div>
+      <div class="sidebar-section-label" style="margin-top:12px">ตั้งค่า</div>
+      <div class="nav-item" onclick="showPage('config')" id="nav-config"><i class="fas fa-gear"></i><span>Config &
+          Tools</span></div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="online-dot"></div>Admin · KX Analytics
+    </div>
+  </aside>
+
+  <main class="main" id="main-app">
+
+    <!-- ==================== DASHBOARD ==================== -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-header">
+        <h1><i class="fas fa-gauge-high"></i> ภาพรวม</h1>
+        <p id="dash-updated">กำลังโหลดข้อมูล...</p>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card c-blue"><i class="fas fa-eye"></i>
+          <div><span>ผู้เยี่ยมชมทั้งหมด</span><strong id="stat-total">—</strong></div>
+        </div>
+        <div class="stat-card c-green"><i class="fas fa-user-check"></i>
+          <div><span>IP ไม่ซ้ำกัน</span><strong id="stat-unique">—</strong></div>
+        </div>
+        <div class="stat-card c-yellow"><i class="fas fa-calendar-day"></i>
+          <div><span>วันนี้</span><strong id="stat-today">—</strong></div>
+        </div>
+        <div class="stat-card c-red"><i class="fas fa-folder-open"></i>
+          <div><span>Section clicks</span><strong id="stat-sections">—</strong></div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title"><i class="fas fa-chart-line"></i> ผู้เยี่ยมชมรายวัน (30 วันล่าสุด)</div>
+          <div class="chart-wrap"><canvas id="daily-chart"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-chart-pie"></i> หมวดหมู่ที่เข้าชม</div>
+          <div class="chart-wrap"><canvas id="section-chart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><i class="fas fa-clock"></i> กิจกรรมล่าสุด (10 รายการ)</div>
+        <div class="tbl-wrap" id="recent-tbl">
+          <div class="empty-state"><i class="fas fa-spinner fa-spin"></i>
+            <p>กำลังโหลด...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== VISITORS ==================== -->
+    <div class="page" id="page-visitors">
+      <div class="page-header">
+        <h1><i class="fas fa-users"></i> ผู้เยี่ยมชมทั้งหมด</h1>
+        <p>รายการ IP ที่เข้าชมพอร์ตโฟลิโอ</p>
+      </div>
+      <div class="card">
+        <div
+          style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px;flex-wrap:wrap">
+          <div class="card-title" style="margin-bottom:0"><i class="fas fa-network-wired"></i> รายการ IP</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-secondary" onclick="loadData()"><i class="fas fa-rotate"></i> รีเฟรช</button>
+            <button class="btn btn-danger" onclick="clearData()"><i class="fas fa-trash"></i> ล้างข้อมูล</button>
+          </div>
+        </div>
+        <div class="tbl-wrap" id="ip-tbl">
+          <div class="empty-state"><i class="fas fa-spinner fa-spin"></i>
+            <p>กำลังโหลด...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== LOGS ==================== -->
+    <div class="page" id="page-logs">
+      <div class="page-header">
+        <h1><i class="fas fa-list-check"></i> Event Logs</h1>
+        <p>บันทึกเหตุการณ์ทั้งหมด ทั้ง page_load และ section_view</p>
+      </div>
+      <div class="card">
+        <div
+          style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px">
+          <div class="card-title" style="margin-bottom:0"><i class="fas fa-scroll"></i> บันทึกทั้งหมด</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-secondary" id="filter-all" onclick="filterLogs('all',this)">ทั้งหมด</button>
+            <button class="btn btn-secondary" id="filter-load" onclick="filterLogs('page_load',this)"><i
+                class="fas fa-door-open"></i> Page Load</button>
+            <button class="btn btn-secondary" id="filter-section" onclick="filterLogs('section_view',this)"><i
+                class="fas fa-folder"></i> Section</button>
+          </div>
+        </div>
+        <div class="tbl-wrap" id="logs-tbl">
+          <div class="empty-state"><i class="fas fa-spinner fa-spin"></i>
+            <p>กำลังโหลด...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== CONFIG ==================== -->
+    <div class="page" id="page-config">
+      <div class="page-header">
+        <h1><i class="fas fa-gear"></i> ตั้งค่าระบบ</h1>
+        <p>จัดการ API Keys, Webhook และเครื่องมือความปลอดภัย</p>
+      </div>
+
+      <div class="info-alert">
+        <i class="fas fa-triangle-exclamation"></i>
+        <div>
+          <strong>หมายเหตุ:</strong> ค่าที่ตั้งไว้ที่นี่จะบันทึกลง <code>sessionStorage</code> ชั่วคราว
+          เมื่อปิด browser จะหายไป<br>
+          สำหรับการใช้งานจริง ให้แก้ไขตัวแปร <code>TRACKER_CONFIG</code>
+          ใน <code>portfolio.html</code> โดยตรง
+        </div>
+      </div>
+
+      <div class="two-col">
+        <!-- JSONBin Config -->
+        <div class="config-card">
+          <h3><i class="fas fa-database"></i> JSONBin.io Settings</h3>
+          <div class="form-group">
+            <label class="form-label">Bin ID</label>
+            <input class="form-input" id="cfg-binid" placeholder="xxxxxxxxxxxxxxxxxxxxxxxx">
+            <div class="form-hint">สร้างได้ที่ jsonbin.io → สร้าง Bin ใหม่ → คัดลอก ID</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">API Key (X-Master-Key)</label>
+            <input class="form-input" id="cfg-apikey" placeholder="$2b$10$..." type="password">
+            <div class="form-hint">Dashboard → API Keys → สร้าง Secret Key</div>
+          </div>
+          <button class="btn btn-primary" onclick="testJSONBin()"><i class="fas fa-plug"></i> ทดสอบการเชื่อมต่อ</button>
+        </div>
+
+        <!-- Discord Webhook -->
+        <div class="config-card">
+          <h3><i class="fab fa-discord"></i> Discord Webhook</h3>
+          <div class="form-group">
+            <label class="form-label">Webhook URL</label>
+            <input class="form-input" id="cfg-webhook" placeholder="https://discord.com/api/webhooks/...">
+            <div class="form-hint">Discord → Server Settings → Integrations → Webhooks</div>
+          </div>
+          <button class="btn btn-primary" onclick="testWebhook()"><i class="fas fa-paper-plane"></i> ส่งทดสอบ</button>
+        </div>
+      </div>
+
+      <!-- Password Hash Tool -->
+      <div class="config-card">
+        <h3><i class="fas fa-key"></i> เครื่องมือ Hash รหัสผ่าน</h3>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.6">
+          ใช้เครื่องมือนี้เพื่อสร้าง hash ของรหัสผ่านใหม่ แล้วนำไปใส่ใน
+          <code
+            style="background:var(--bg4);padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px">CORRECT_HASH</code>
+          ในไฟล์ analytics.html
+        </p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
+          <div style="flex:1;min-width:200px">
+            <label class="form-label">รหัสผ่านใหม่</label>
+            <input class="form-input" id="new-pwd" type="password" placeholder="ใส่รหัสผ่านที่ต้องการ">
+          </div>
+          <button class="btn btn-primary" onclick="generateHash()"><i class="fas fa-wand-magic-sparkles"></i> สร้าง
+            Hash</button>
+        </div>
+        <div class="hash-result" id="hash-result"></div>
+        <div style="margin-top:10px;font-size:11px;color:var(--muted)">
+          Salt ที่ใช้: <code style="color:var(--cyan)">kx_analytics_2025</code>
+        </div>
+      </div>
+
+      <!-- Clear Data -->
+      <div class="config-card" style="border-color:rgba(239,68,68,.3)">
+        <h3><i class="fas fa-triangle-exclamation"></i> Danger Zone</h3>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:16px">การกระทำต่อไปนี้ไม่สามารถย้อนกลับได้</p>
+        <button class="btn btn-danger" onclick="clearData()"><i class="fas fa-trash"></i> ล้างข้อมูลทั้งหมด</button>
+      </div>
+    </div>
+
+  </main>
+
+
+  <!-- ========== CUSTOM CONFIRM DIALOG ========== -->
+  <div class="confirm-bg" id="confirm-dialog">
+    <div class="confirm-box">
+      <div class="confirm-icon"><i class="fas fa-trash" id="confirm-icon-i"></i></div>
+      <div class="confirm-title" id="confirm-title">ยืนยัน</div>
+      <div class="confirm-msg" id="confirm-msg">คุณแน่ใจหรือไม่?</div>
+      <div class="confirm-btns">
+        <button class="confirm-cancel" onclick="confirmResolve(false)">ยกเลิก</button>
+        <button class="confirm-ok" id="confirm-ok-btn" onclick="confirmResolve(true)">ยืนยัน</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-wrap"></div>
+
+  <script>
+    // =====================================================
+    //  ⚙️ ANALYTICS CONFIG — WEBHOOKS แยกต่างหากทุกฟังก์ชัน
+    // =====================================================
+    const ANALYTICS_CONFIG = {
+      // Webhook #1 — เข้าหน้าเว็บ analytics
+      WEBHOOK_VISIT: 'PASTE_YOUR_VISIT_WEBHOOK_HERE',
+      // Webhook #2 — กรอกรหัสผิด
+      WEBHOOK_FAIL: 'PASTE_YOUR_FAIL_WEBHOOK_HERE',
+      // Webhook #3 — admin แก้ไขในเว็บ
+      WEBHOOK_EDIT: 'PASTE_YOUR_EDIT_WEBHOOK_HERE',
+      SITE_NAME: 'KX Analytics'
+    };
+
+    function nowTH() {
+      return new Intl.DateTimeFormat('th-TH', {
+        year: 'numeric', month: 'short', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        timeZone: 'Asia/Bangkok'
+      }).format(new Date());
+    }
+
+    async function sendWebhook(url, embed) {
+      if (!url || url.includes('PASTE_YOUR')) return;
+      try {
+        await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ embeds: [embed] })
+        });
+      } catch (e) { console.warn('[Webhook]', e.message); }
+    }
+
+    // Webhook #1 — เข้าหน้า analytics
+    function notifyVisit() {
+      sendWebhook(ANALYTICS_CONFIG.WEBHOOK_VISIT, {
+        title: '📊 เข้าหน้า KX Analytics',
+        description: 'มีคนเข้าหน้า Analytics Dashboard',
+        color: 0xef4444,
+        fields: [
+          { name: '📅 เวลา (TH)', value: nowTH(), inline: true },
+          { name: '🌐 URL', value: location.hostname || 'localhost', inline: true }
+        ],
+        footer: { text: `${ANALYTICS_CONFIG.SITE_NAME} • Visit` },
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    // Webhook #2 — กรอกรหัสผิด
+    function notifyLoginFail(attempts, max) {
+      sendWebhook(ANALYTICS_CONFIG.WEBHOOK_FAIL, {
+        title: '🚨 พยายามเข้าระบบแต่กรอกรหัสผิด',
+        description: `กรอกรหัสผิดครั้งที่ ${attempts}/${max}`,
+        color: 0xf59e0b,
+        fields: [
+          { name: '❌ ครั้งที่', value: `${attempts}/${max}`, inline: true },
+          { name: '📅 เวลา (TH)', value: nowTH(), inline: true },
+          { name: '🌐 URL', value: location.hostname || 'localhost', inline: true }
+        ],
+        footer: { text: `${ANALYTICS_CONFIG.SITE_NAME} • Security` },
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    // Webhook #3 — แก้ไขในเว็บ
+    function notifyEdit(action, detail) {
+      sendWebhook(ANALYTICS_CONFIG.WEBHOOK_EDIT, {
+        title: `⚙️ Admin แก้ไข: ${action}`,
+        description: detail || '-',
+        color: 0x10b981,
+        fields: [
+          { name: '⚙️ การกระทำ', value: action, inline: true },
+          { name: '📅 เวลา (TH)', value: nowTH(), inline: true }
+        ],
+        footer: { text: `${ANALYTICS_CONFIG.SITE_NAME} • Admin Edit` },
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    // =====================================================
+    //  🔐 SECURITY CONFIG
+    // =====================================================
+    const SECURITY = {
+      CORRECT_HASH: '43098454b9e0bbd245a8704da7a2c074618642298cd0c89bdcd12b912f2d96d2',
+      SALT: 'kx_analytics_2025',
+      MAX_ATTEMPTS: 5,
+      LOCKOUT_SECONDS: 300,
+      SESSION_KEY: 'kx_auth_token',
+      SESSION_DURATION: 8 * 60 * 60 * 1000
+    };
+
+    // =====================================================
+    //  🔐 AUTH SYSTEM
+    // =====================================================
+    let loginAttempts = parseInt(sessionStorage.getItem('kx_attempts') || '0');
+    let lockoutUntil = parseInt(sessionStorage.getItem('kx_lockout') || '0');
+    let lockTimerInterval = null;
+
+    async function sha256(str) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(str);
+      const hashBuf = await crypto.subtle.digest('SHA-256', data);
+      return Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function isLockedOut() { return lockoutUntil > Date.now(); }
+
+    function updateAttemptsDisplay() {
+      const remaining = SECURITY.MAX_ATTEMPTS - loginAttempts;
+      const info = document.getElementById('attempts-info');
+      const barWrap = document.getElementById('attempts-bar-wrap');
+      const fill = document.getElementById('attempts-fill');
+      if (loginAttempts > 0) {
+        barWrap.style.display = 'block';
+        info.textContent = `เหลือโอกาส ${remaining}/${SECURITY.MAX_ATTEMPTS} ครั้ง`;
+        fill.style.width = `${(loginAttempts / SECURITY.MAX_ATTEMPTS) * 100}%`;
+      }
+    }
+
+    function startLockTimer() {
+      const overlay = document.getElementById('lock-overlay');
+      overlay.classList.add('show');
+      lockTimerInterval = setInterval(() => {
+        const remaining = Math.max(0, Math.ceil((lockoutUntil - Date.now()) / 1000));
+        const m = Math.floor(remaining / 60).toString().padStart(2, '0');
+        const s = (remaining % 60).toString().padStart(2, '0');
+        document.getElementById('lock-timer').textContent = `${m}:${s}`;
+        if (remaining <= 0) {
+          clearInterval(lockTimerInterval);
+          overlay.classList.remove('show');
+          loginAttempts = 0;
+          sessionStorage.removeItem('kx_attempts');
+          sessionStorage.removeItem('kx_lockout');
+          document.getElementById('login-btn').disabled = false;
+          updateAttemptsDisplay();
+        }
+      }, 1000);
+    }
+
+    async function doLogin() {
+      if (isLockedOut()) return;
+      const pwd = document.getElementById('pwd-input').value;
+      if (!pwd) return;
+      const btn = document.getElementById('login-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div>';
+
+      const inputHash = await sha256(pwd + SECURITY.SALT);
+      const correct = inputHash === SECURITY.CORRECT_HASH;
+
+      setTimeout(() => {
+        btn.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i> เข้าสู่ระบบ';
+        if (correct) {
+          const token = { expiry: Date.now() + SECURITY.SESSION_DURATION, uid: crypto.randomUUID?.() || Date.now() };
+          sessionStorage.setItem(SECURITY.SESSION_KEY, JSON.stringify(token));
+          sessionStorage.removeItem('kx_attempts');
+          sessionStorage.removeItem('kx_lockout');
+          enterDashboard();
+        } else {
+          loginAttempts++;
+          sessionStorage.setItem('kx_attempts', loginAttempts.toString());
+          document.getElementById('pwd-input').value = '';
+          document.getElementById('pwd-input').classList.add('error');
+          setTimeout(() => document.getElementById('pwd-input').classList.remove('error'), 800);
+
+          // Webhook #2
+          notifyLoginFail(loginAttempts, SECURITY.MAX_ATTEMPTS);
+
+          if (loginAttempts >= SECURITY.MAX_ATTEMPTS) {
+            lockoutUntil = Date.now() + SECURITY.LOCKOUT_SECONDS * 1000;
+            sessionStorage.setItem('kx_lockout', lockoutUntil.toString());
+            startLockTimer();
+            document.getElementById('login-err').classList.remove('show');
+          } else {
+            showErr(`รหัสผ่านไม่ถูกต้อง (${loginAttempts}/${SECURITY.MAX_ATTEMPTS})`);
+            btn.disabled = false;
+          }
+          updateAttemptsDisplay();
+        }
+      }, 300);
+    }
+
+    function showErr(msg) {
+      document.getElementById('err-msg').textContent = msg;
+      document.getElementById('login-err').classList.add('show');
+      setTimeout(() => document.getElementById('login-err').classList.remove('show'), 3000);
+    }
+
+    function togglePwd() {
+      const input = document.getElementById('pwd-input');
+      const icon = document.getElementById('eye-icon');
+      if (input.type === 'password') { input.type = 'text'; icon.className = 'fas fa-eye-slash'; }
+      else { input.type = 'password'; icon.className = 'fas fa-eye'; }
+    }
+
+    function checkSession() {
+      try {
+        const raw = sessionStorage.getItem(SECURITY.SESSION_KEY);
+        if (!raw) return false;
+        const token = JSON.parse(raw);
+        if (token.expiry > Date.now()) return true;
+        sessionStorage.removeItem(SECURITY.SESSION_KEY);
+        return false;
+      } catch { return false; }
+    }
+
+    function enterDashboard() {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('main-nav').style.display = 'flex';
+      document.getElementById('main-app').style.display = 'block';
+      // Pre-fill config inputs
+      const binInput = document.getElementById('cfg-binid');
+      const keyInput = document.getElementById('cfg-apikey');
+      if (binInput && !binInput.value) binInput.value = JSONBIN_CONFIG.BIN_ID;
+      if (keyInput && !keyInput.value) keyInput.value = JSONBIN_CONFIG.API_KEY;
+      loadData();
+    }
+
+    function doLogout() {
+      sessionStorage.removeItem(SECURITY.SESSION_KEY);
+      location.reload();
+    }
+
+    // =====================================================
+    //  🔔 CUSTOM CONFIRM DIALOG
+    // =====================================================
+    let confirmCallback = null;
+
+    function showConfirm(title, msg, okLabel = 'ยืนยัน', iconClass = 'fa-trash') {
+      document.getElementById('confirm-title').textContent = title;
+      document.getElementById('confirm-msg').textContent = msg;
+      document.getElementById('confirm-ok-btn').textContent = okLabel;
+      document.getElementById('confirm-icon-i').className = `fas ${iconClass}`;
+      document.getElementById('confirm-dialog').classList.add('open');
+      return new Promise(resolve => { confirmCallback = resolve; });
+    }
+
+    function confirmResolve(result) {
+      document.getElementById('confirm-dialog').classList.remove('open');
+      if (confirmCallback) { confirmCallback(result); confirmCallback = null; }
+    }
+
+    // =====================================================
+    //  📊 DATA LAYER
+    // =====================================================
+    let allVisits = [];
+
+    // =====================================================
+    //  🗄️ JSONBIN CONFIG — ใช้ค่าเดียวกับ portfolio.html
+    // =====================================================
+    const JSONBIN_CONFIG = {
+      BIN_ID: '69972c1ed0ea881f40c739f2',
+      API_KEY: '$2a$10$Cft7ADPKnOnw/j79KdvlA.j9LUrf.36Hu3NhqLBCguk9EJq2Eew6e'
+    };
+
+    function getJSONBinConfig() {
+      // ใช้ค่าจาก Config page ก่อน ถ้าไม่มีใช้ hardcode
+      const binId = document.getElementById('cfg-binid')?.value ||
+        sessionStorage.getItem('kx_binid') ||
+        JSONBIN_CONFIG.BIN_ID;
+      const apiKey = document.getElementById('cfg-apikey')?.value ||
+        sessionStorage.getItem('kx_apikey') ||
+        JSONBIN_CONFIG.API_KEY;
+      return { binId, apiKey };
+    }
+
+    async function loadData() {
+      const { binId, apiKey } = getJSONBinConfig();
+      // ถ้าค่ายังเป็น placeholder ใช้ hardcode แทน
+      const effectiveBinId = (binId === 'YOUR_BIN_ID_HERE') ? JSONBIN_CONFIG.BIN_ID : binId;
+      const effectiveApiKey = (apiKey === 'YOUR_API_KEY_HERE') ? JSONBIN_CONFIG.API_KEY : apiKey;
+      if (!effectiveBinId || effectiveBinId === 'YOUR_BIN_ID_HERE') {
+        allVisits = [];
+        renderAll();
+        toast('ยังไม่ได้ตั้งค่า JSONBin', 'i');
+        return;
+      }
+      try {
+        const r = await fetch(`https://api.jsonbin.io/v3/b/${effectiveBinId}/latest`, {
+          headers: { 'X-Master-Key': effectiveApiKey }
+        });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const data = await r.json();
+        allVisits = data.record?.visits || [];
+        renderAll();
+        toast(`โหลดข้อมูลสำเร็จ (${allVisits.length} รายการ)`, 's');
+        document.getElementById('last-refresh').textContent = 'อัปเดต: ' + new Date().toLocaleTimeString('th-TH');
+      } catch (e) {
+        toast('โหลดข้อมูลไม่ได้: ' + e.message, 'e');
+        allVisits = [];
+        renderAll();
+      }
+    }
+
+    function renderAll() {
+      renderStats();
+      renderDailyChart();
+      renderSectionChart();
+      renderRecentTable();
+      renderIPTable();
+      renderLogsTable(allVisits);
+      document.getElementById('dash-updated').textContent = `อัปเดตล่าสุด: ${new Date().toLocaleTimeString('th-TH')} — ${allVisits.length} รายการทั้งหมด`;
+    }
+
+    // ===== STATS =====
+    function renderStats() {
+      const today = new Date().toISOString().split('T')[0];
+      const todayVisits = allVisits.filter(v => v.datetime?.startsWith(today) && v.type === 'page_load');
+      const uniqueIPs = new Set(allVisits.map(v => v.ip)).size;
+      const totalLoad = allVisits.filter(v => v.type === 'page_load').length;
+      const totalSection = allVisits.filter(v => v.type === 'section_view').length;
+      countUp('stat-total', totalLoad);
+      countUp('stat-unique', uniqueIPs);
+      countUp('stat-today', todayVisits.length);
+      countUp('stat-sections', totalSection);
+    }
+
+    function countUp(id, target) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      let current = 0;
+      const step = Math.ceil(target / 30);
+      const timer = setInterval(() => {
+        current = Math.min(current + step, target);
+        el.textContent = current.toLocaleString();
+        if (current >= target) clearInterval(timer);
+      }, 30);
+    }
+
+    // ===== CHARTS =====
+    let dailyChart = null, sectionChart = null;
+
+    function renderDailyChart() {
+      const days = {};
+      for (let i = 13; i >= 0; i--) {
+        const d = new Date(); d.setDate(d.getDate() - i);
+        const key = d.toISOString().split('T')[0];
+        days[key] = 0;
+      }
+      allVisits.filter(v => v.type === 'page_load').forEach(v => {
+        const key = v.datetime?.split('T')[0];
+        if (key && days[key] !== undefined) days[key]++;
+      });
+      const labels = Object.keys(days).map(d => {
+        const date = new Date(d);
+        return `${date.getDate()}/${date.getMonth() + 1}`;
+      });
+      const values = Object.values(days);
+      const ctx = document.getElementById('daily-chart');
+      if (dailyChart) dailyChart.destroy();
+      dailyChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels, datasets: [{
+            label: 'ผู้เยี่ยมชม', data: values,
+            borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,.1)',
+            borderWidth: 2, fill: true, tension: 0.4,
+            pointBackgroundColor: '#3b82f6', pointRadius: 4, pointHoverRadius: 6
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { color: 'rgba(42,52,72,.5)' }, ticks: { color: '#64748b', font: { size: 10 } } },
+            y: { grid: { color: 'rgba(42,52,72,.5)' }, ticks: { color: '#64748b', font: { size: 10 }, stepSize: 1 }, beginAtZero: true }
+          }
+        }
+      });
+    }
+
+    function renderSectionChart() {
+      const counts = {};
+      allVisits.filter(v => v.type === 'section_view' && v.section).forEach(v => {
+        counts[v.section] = (counts[v.section] || 0) + 1;
+      });
+      const labels = Object.keys(counts);
+      const values = Object.values(counts);
+      const colors = ['#3b82f6', '#10b981', '#f59e0b', '#a855f7', '#ef4444', '#06b6d4'];
+      const ctx = document.getElementById('section-chart');
+      if (sectionChart) sectionChart.destroy();
+      if (!labels.length) {
+        ctx.parentElement.innerHTML = '<div class="empty-state"><i class="fas fa-chart-pie"></i><p>ยังไม่มีข้อมูล</p></div>';
+        return;
+      }
+      sectionChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels, datasets: [{ data: values, backgroundColor: colors.slice(0, labels.length), borderWidth: 0 }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 11 }, padding: 12 } } },
+          cutout: '60%'
+        }
+      });
+    }
+
+    function renderRecentTable(visits = allVisits) {
+      const recent = [...visits].reverse().slice(0, 10);
+      renderTable('recent-tbl', recent);
+    }
+
+    function renderIPTable() {
+      const ipMap = {};
+      allVisits.forEach(v => {
+        if (!ipMap[v.ip]) ipMap[v.ip] = { ip: v.ip, count: 0, last: v.datetime, lastDisplay: v.dateDisplay };
+        ipMap[v.ip].count++;
+        if (v.datetime > ipMap[v.ip].last) { ipMap[v.ip].last = v.datetime; ipMap[v.ip].lastDisplay = v.dateDisplay; }
+      });
+      const rows = Object.values(ipMap).sort((a, b) => b.last.localeCompare(a.last));
+      if (!rows.length) {
+        document.getElementById('ip-tbl').innerHTML = '<div class="empty-state"><i class="fas fa-network-wired"></i><p>ยังไม่มีข้อมูล</p></div>';
+        return;
+      }
+      let html = `<table class="tbl"><thead><tr><th>#</th><th>IP Address</th><th>จำนวนครั้ง</th><th>เข้าชมล่าสุด</th></tr></thead><tbody>`;
+      rows.forEach((r, i) => {
+        html += `<tr><td>${i + 1}</td><td>${esc(r.ip)}</td><td><strong style="color:var(--blue)">${r.count}</strong></td><td>${esc(r.lastDisplay || r.last?.slice(0, 16) || '—')}</td></tr>`;
+      });
+      html += '</tbody></table>';
+      document.getElementById('ip-tbl').innerHTML = html;
+    }
+
+    function renderLogsTable(visits = allVisits) {
+      renderTable('logs-tbl', [...visits].reverse());
+    }
+
+    function renderTable(containerId, rows) {
+      const el = document.getElementById(containerId);
+      if (!el) return;
+      if (!rows.length) {
+        el.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>ยังไม่มีข้อมูล</p></div>';
+        return;
+      }
+      let html = `<table class="tbl"><thead><tr><th>ประเภท</th><th>IP</th><th>เวลา (TH)</th><th>หมวดหมู่</th><th>Session</th></tr></thead><tbody>`;
+      rows.forEach(v => {
+        const badge = v.type === 'page_load'
+          ? '<span class="type-badge badge-load"><i class="fas fa-door-open"></i> Page Load</span>'
+          : '<span class="type-badge badge-section"><i class="fas fa-folder"></i> Section</span>';
+        html += `<tr><td>${badge}</td><td>${esc(v.ip || '—')}</td><td>${esc(v.dateDisplay || v.datetime?.slice(0, 16) || '—')}</td><td>${esc(v.section || v.page || '—')}</td><td style="color:var(--muted)">${esc((v.session || '—').slice(0, 8))}...</td></tr>`;
+      });
+      html += '</tbody></table>';
+      el.innerHTML = html;
+    }
+
+    function filterLogs(type, btn) {
+      document.querySelectorAll('[id^="filter-"]').forEach(b => b.classList.remove('btn-primary'));
+      btn.classList.add('btn-primary');
+      const filtered = type === 'all' ? allVisits : allVisits.filter(v => v.type === type);
+      renderLogsTable(filtered);
+    }
+
+    function esc(str) {
+      return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // ===== CLEAR DATA (ใช้ confirm กลางจอ) =====
+    async function clearData() {
+      const confirmed = await showConfirm(
+        'ล้างข้อมูลทั้งหมด',
+        'ต้องการลบข้อมูลทั้งหมดใน JSONBin? ไม่สามารถกู้คืนได้',
+        'ลบเลย', 'fa-triangle-exclamation'
+      );
+      if (!confirmed) return;
+      const { binId, apiKey } = getJSONBinConfig();
+      if (binId === 'YOUR_BIN_ID_HERE') { toast('ไม่ได้ตั้งค่า JSONBin', 'e'); return; }
+      try {
+        await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'X-Master-Key': apiKey },
+          body: JSON.stringify({ visits: [] })
+        });
+        allVisits = [];
+        renderAll();
+        notifyEdit('ล้างข้อมูล', 'Admin ล้างข้อมูล visits ทั้งหมดใน JSONBin');
+        toast('ล้างข้อมูลสำเร็จ', 's');
+      } catch (e) { toast('เกิดข้อผิดพลาด: ' + e.message, 'e'); }
+    }
+
+    // ===== CONFIG FUNCTIONS =====
+    async function testJSONBin() {
+      const binId = document.getElementById('cfg-binid').value;
+      const apiKey = document.getElementById('cfg-apikey').value;
+      if (!binId || !apiKey) { toast('กรุณาใส่ Bin ID และ API Key', 'e'); return; }
+      try {
+        const r = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
+          headers: { 'X-Master-Key': apiKey }
+        });
+        if (r.ok) {
+          sessionStorage.setItem('kx_binid', binId);
+          sessionStorage.setItem('kx_apikey', apiKey);
+          toast('เชื่อมต่อ JSONBin สำเร็จ ✓', 's');
+          notifyEdit('ทดสอบ JSONBin', `เชื่อมต่อ Bin ID: ${binId.slice(0, 8)}...`);
+        } else throw new Error(`HTTP ${r.status}`);
+      } catch (e) { toast('เชื่อมต่อไม่ได้: ' + e.message, 'e'); }
+    }
+
+    async function testWebhook() {
+      const url = document.getElementById('cfg-webhook').value;
+      if (!url || !url.startsWith('https://discord.com/api/webhooks/')) {
+        toast('URL ไม่ถูกต้อง', 'e'); return;
+      }
+      try {
+        const r = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            embeds: [{
+              title: '✅ KX Analytics — ทดสอบ Webhook',
+              description: 'การเชื่อมต่อ Discord Webhook สำเร็จ!',
+              color: 0x10b981,
+              footer: { text: 'KX Analytics Dashboard' },
+              timestamp: new Date().toISOString()
+            }]
+          })
+        });
+        if (r.ok) { toast('ส่ง Discord Webhook สำเร็จ ✓', 's'); notifyEdit('ทดสอบ Webhook', 'ส่งทดสอบ Discord Webhook สำเร็จ'); }
+        else throw new Error(`HTTP ${r.status}`);
+      } catch (e) { toast('ส่งไม่ได้: ' + e.message, 'e'); }
+    }
+
+    async function generateHash() {
+      const pwd = document.getElementById('new-pwd').value;
+      if (!pwd) { toast('กรุณาใส่รหัสผ่าน', 'e'); return; }
+      const hash = await sha256(pwd + SECURITY.SALT);
+      const el = document.getElementById('hash-result');
+      el.innerHTML = `<div style="margin-bottom:6px;color:var(--muted);font-size:10px">CORRECT_HASH สำหรับรหัสผ่าน: <strong style="color:var(--text)">${esc(pwd)}</strong></div><div>${hash}</div><div style="margin-top:8px;font-size:10px;color:var(--muted)">คัดลอก hash นี้ไปวางใน SECURITY.CORRECT_HASH ในไฟล์ analytics.html</div>`;
+      el.classList.add('show');
+      document.getElementById('new-pwd').value = '';
+      toast('สร้าง Hash สำเร็จ', 's');
+      notifyEdit('สร้าง Hash รหัสผ่านใหม่', 'Admin เปลี่ยนรหัสผ่านระบบ');
+    }
+
+    // ===== PAGE NAVIGATION =====
+    const pages = ['dashboard', 'visitors', 'logs', 'config'];
+    let currentPage = 'dashboard';
+
+    function showPage(id) {
+      if (id === currentPage) return;
+      pages.forEach(p => {
+        document.getElementById(`page-${p}`)?.classList.remove('active');
+        document.getElementById(`nav-${p}`)?.classList.remove('active');
+      });
+      document.getElementById(`page-${id}`)?.classList.add('active');
+      document.getElementById(`nav-${id}`)?.classList.add('active');
+      currentPage = id;
+      closeSidebar();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      notifyEdit(`เปิดหน้า ${id}`, `Admin เปิดดูหน้า ${id}`);
+    }
+
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('overlay').classList.toggle('active');
+    }
+    function closeSidebar() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('overlay').classList.remove('active');
+    }
+
+    function toast(msg, type = 'i') {
+      const wrap = document.getElementById('toast-wrap');
+      const t = document.createElement('div');
+      const icons = { s: 'fa-circle-check', e: 'fa-circle-xmark', i: 'fa-circle-info' };
+      t.className = `toast ${type}`;
+      t.innerHTML = `<i class="fas ${icons[type] || icons.i}"></i>${esc(msg)}`;
+      wrap.appendChild(t);
+      setTimeout(() => { t.classList.add('hide'); setTimeout(() => t.remove(), 300); }, 3500);
+    }
+
+    // =====================================================
+    //  🚀 INIT
+    // =====================================================
+    window.addEventListener('load', () => {
+      if (checkSession()) {
+        enterDashboard();
+        notifyVisit(); // Webhook #1
+        return;
+      }
+      lockoutUntil = parseInt(sessionStorage.getItem('kx_lockout') || '0');
+      if (isLockedOut()) startLockTimer();
+      updateAttemptsDisplay();
+
+      // Webhook #1 — คนเข้าหน้า login
+      notifyVisit();
+
+      document.addEventListener('keydown', e => {
+        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key))) {
+          if (!checkSession()) { e.preventDefault(); }
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
