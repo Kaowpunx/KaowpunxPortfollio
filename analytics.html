@@ -1461,7 +1461,7 @@
             <input class="form-input" id="cfg-binid" placeholder="xxxxxxxxxxxxxxxxxxxxxxxx">
           </div>
           <div class="form-group">
-            <label class="form-label">API Key (X-Master-Key)</label>
+            <label class="form-label">API Key (X-Access-Key)</label>
             <input class="form-input" id="cfg-apikey" placeholder="$2b$10$..." type="password">
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -1958,8 +1958,8 @@
     //  🗄️ JSONBIN CONFIG — ใช้ค่าเดียวกับ portfolio.html
     // =====================================================
     const JSONBIN_CONFIG = {
-      BIN_ID: '69972c1ed0ea881f40c739f2',
-      API_KEY: '$2a$10$xanXzGI60w9c5TdOdOAlzuCK9.WeqEWTFX1C.JO0Nbd1gd9r0tJ5e'
+      BIN_ID: '699a3615ae596e708f3dcb6d',
+      API_KEY: '$2a$10$2wm5mSGNtLgLu4AbFVnvM.47VqLmB..vogDXzJ2/s2TAbSMrJIEE.'
     };
 
     function getJSONBinConfig() {
@@ -1980,7 +1980,7 @@
       if (!effectiveBinId) return;
       try {
         const r = await fetch(`https://api.jsonbin.io/v3/b/${effectiveBinId}/latest`, {
-          headers: { 'X-Master-Key': effectiveApiKey }
+          headers: { 'X-Access-Key': effectiveApiKey }
         });
         if (!r.ok) return;
         const data = await r.json();
@@ -2020,7 +2020,7 @@
       }
       try {
         const r = await fetch(`https://api.jsonbin.io/v3/b/${effectiveBinId}/latest`, {
-          headers: { 'X-Master-Key': effectiveApiKey }
+          headers: { 'X-Access-Key': effectiveApiKey }
         });
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         const data = await r.json();
@@ -2210,7 +2210,7 @@
       try {
         await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json', 'X-Master-Key': apiKey },
+          headers: { 'Content-Type': 'application/json', 'X-Access-Key': apiKey },
           body: JSON.stringify({ visits: [] })
         });
         allVisits = [];
@@ -2227,7 +2227,7 @@
       if (!binId || !apiKey) { toast('กรุณาใส่ Bin ID และ API Key', 'e'); return; }
       try {
         const r = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
-          headers: { 'X-Master-Key': apiKey }
+          headers: { 'X-Access-Key': apiKey }
         });
         if (r.ok) {
           sessionStorage.setItem('kx_binid', binId);
